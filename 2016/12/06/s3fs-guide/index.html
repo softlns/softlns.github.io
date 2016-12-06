@@ -100,7 +100,7 @@
 <meta property="og:site_name" content="Lain's Blog">
 <meta property="og:description" content="概述KS3（Kingsoft Standard Storage Service）服务是一个对象存储类服务。类似于网盘，可以通过网络随时随地的获取存储数据。金山云为用户管理KS3存储桶提供了两种控制管理方式：金山云的后台Consol、金山云官方KS3的SDK。
 相比于以上两种使用场景，在实际的开发应用中，常常还有这样的场景：把KS3存储桶mount到本地文件系统，使得用户可以像操作文件目录一样操作K">
-<meta property="og:updated_time" content="2016-12-06T10:04:30.716Z">
+<meta property="og:updated_time" content="2016-12-06T10:07:42.484Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="s3fs使用指南">
 <meta name="twitter:description" content="概述KS3（Kingsoft Standard Storage Service）服务是一个对象存储类服务。类似于网盘，可以通过网络随时随地的获取存储数据。金山云为用户管理KS3存储桶提供了两种控制管理方式：金山云的后台Consol、金山云官方KS3的SDK。
@@ -573,9 +573,15 @@
 <li>多个客户端挂载同一个KS3 bucket时，依赖用户自行协调各个客户端的行为。例如避免多个客户端写同一个文件等等。</li>
 </ul>
 <h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><h3 id="1"><a href="#1" class="headerlink" title="1"></a>1</h3><ul>
-<li>Q: s3fs适合什么样的程序？<br>s3fs能把ks3 bucket挂载到本地，如果您使用的软件没有支持KS3，但您又想让数据能自动同步到KS3，那么s3fs是一个很好的选择。<h3 id="2"><a href="#2" class="headerlink" title="2"></a>2</h3></li>
-<li>Q: s3fs一定要金山云的机器才能用么？<br>s3fs不限制一定要金山云的内网才可以使用，外网机器依然可以使用。只是内网机房有KS3的专线，保证了KS3的访问速度。<h3 id="3"><a href="#3" class="headerlink" title="3"></a>3</h3></li>
-<li>Q: s3fs如何Debug？<br>您可以使用在挂载时，加上-d -o f2参数，s3fs会把日志写入到系统日志中。在centos系统中，在/var/log/messages中。<br>您也可以在挂载时使用-f -d -o f2参数，s3fs会把日志输出到屏幕上。<h3 id="4"><a href="#4" class="headerlink" title="4"></a>4</h3></li>
+<li>Q: s3fs适合什么样的程序？<br>s3fs能把ks3 bucket挂载到本地，如果您使用的软件没有支持KS3，但您又想让数据能自动同步到KS3，那么s3fs是一个很好的选择。</li>
+</ul>
+<h3 id="2"><a href="#2" class="headerlink" title="2"></a>2</h3><ul>
+<li>Q: s3fs一定要金山云的机器才能用么？<br>s3fs不限制一定要金山云的内网才可以使用，外网机器依然可以使用。只是内网机房有KS3的专线，保证了KS3的访问速度。</li>
+</ul>
+<h3 id="3"><a href="#3" class="headerlink" title="3"></a>3</h3><ul>
+<li>Q: s3fs如何Debug？<br>您可以使用在挂载时，加上-d -o f2参数，s3fs会把日志写入到系统日志中。在centos系统中，在/var/log/messages中。<br>您也可以在挂载时使用-f -d -o f2参数，s3fs会把日志输出到屏幕上。</li>
+</ul>
+<h3 id="4"><a href="#4" class="headerlink" title="4"></a>4</h3><ul>
 <li>Q: s3fs提示s3fs: unable to access MOUNTPOINT /mnt/ks3: No such file or directory</li>
 </ul>
 <h3 id="5"><a href="#5" class="headerlink" title="5"></a>5</h3><ul>
@@ -584,7 +590,7 @@
 <ol>
 <li>安装supervisor，在ubuntu中执行sudo apt-get install supervisor</li>
 <li><p>建立一个目录，编辑s3fs的启动脚本：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">   mkdir /root/s3fs_scripts</div><div class="line">vi /root/s3fs_scripts/start_s3fs.sh</div><div class="line">   <span class="comment"># contents of start_s3fs.sh</span></div><div class="line">    s3fs ks3<span class="built_in">test</span> /mnt/ks3 <span class="_">-f</span> -o passwd_file=/home/lain/passwd-ks3fs -o multipart_size=100 -o parallel_count=10 -o sigv2 -o curldbg -o url=http://ks3-cn-shanghai-internal.ksyun.com</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">mkdir /root/s3fs_scripts</div><div class="line">vi /root/s3fs_scripts/start_s3fs.sh</div><div class="line"><span class="comment"># contents of start_s3fs.sh</span></div><div class="line">s3fs ks3<span class="built_in">test</span> /mnt/ks3 <span class="_">-f</span> -o passwd_file=/home/lain/passwd-ks3fs -o multipart_size=100 -o parallel_count=10 -o sigv2 -o curldbg -o url=http://ks3-cn-shanghai-internal.ksyun.com</div></pre></td></tr></table></figure>
 </li>
 <li><p>编辑/etc/supervisor/supervisord.conf，在最后加入下面一段：</p>
  <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[program:s3fs]</div><div class="line"><span class="built_in">command</span>=bash /root/s3fs_scripts/start_s3fs.sh</div><div class="line">logfile=/var/<span class="built_in">log</span>/s3fs.log</div><div class="line">log_stdout=<span class="literal">true</span></div><div class="line">log_stderr=<span class="literal">true</span></div><div class="line">logfile_maxbytes=1MB</div><div class="line">logfile_backups=10</div></pre></td></tr></table></figure>
