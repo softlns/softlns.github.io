@@ -2,23 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://softlns.github.io/2016/11/28/rclone-guide/</loc>
+    
+    <lastmod>2016-12-06T08:27:14.104Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://softlns.github.io/2016/11/14/jenkins-gitlab-docker/</loc>
+    
+    <lastmod>2016-12-06T08:25:58.851Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://softlns.github.io/2016/12/06/s3fs-guide/</loc>
     
     <lastmod>2016-12-06T03:22:48.245Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://softlns.github.io/2016/12/06/rlcone-guide/</loc>
-    
-    <lastmod>2016-12-06T03:19:49.695Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://softlns.github.io/2016/12/06/jenkins-gitlab-docker/</loc>
-    
-    <lastmod>2016-12-06T03:13:45.017Z</lastmod>
     
   </url>
   
