@@ -566,7 +566,7 @@
     <link href="https://softlns.github.io/2016/10/22/create-kubernetes-cluster/"/>
     <id>https://softlns.github.io/2016/10/22/create-kubernetes-cluster/</id>
     <published>2016-10-22T12:48:31.000Z</published>
-    <updated>2016-12-05T09:53:10.033Z</updated>
+    <updated>2016-12-06T08:30:19.597Z</updated>
     
     <content type="html"><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Kubernetes 1.4引入了kubeadm的部署机制，极大地简化了Kubernetes集群的构建，可以很方便地集成到自动化运维中（Terraform, Chef, Puppet等）。</p>
 <p>kubeadm还处于alpha版本，替换之前kube-up.sh，用于集群的创建和节点的增加。<br><a id="more"></a></p>
@@ -616,6 +616,8 @@
 &lt;p&gt;kubeadm还处于alpha版本，替换之前kube-up.sh，用于集群的创建和节点的增加。&lt;br&gt;
     
     </summary>
+    
+      <category term="技术" scheme="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
       <category term="Docker" scheme="https://softlns.github.io/tags/Docker/"/>
@@ -900,7 +902,7 @@ Linux
     <link href="https://softlns.github.io/2014/09/13/go-goroutine/"/>
     <id>https://softlns.github.io/2014/09/13/go-goroutine/</id>
     <published>2014-09-13T08:54:45.000Z</published>
-    <updated>2016-12-05T09:02:10.278Z</updated>
+    <updated>2016-12-06T08:29:37.941Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p><b>Go中并发程序依靠是：goroutine和channel</b></p>
@@ -1346,6 +1348,8 @@ func main() {
 &lt;p&gt;&lt;b&gt;“一个Goroutine是一个与其他goroutines并发运行在同一地址空间的Go函数或方法。一个运行的程序由一个或更多个goroutine组成。它与线程、协程、进程等不同。它是一个goroutine。”&lt;/b&gt;&lt;/p&gt;
     
     </summary>
+    
+      <category term="技术" scheme="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
       <category term="golang" scheme="https://softlns.github.io/tags/golang/"/>
