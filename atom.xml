@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://softlns.github.io/"/>
-  <updated>2016-12-06T03:22:48.245Z</updated>
+  <updated>2016-12-06T10:04:30.716Z</updated>
   <id>https://softlns.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://softlns.github.io/2016/12/06/s3fs-guide/"/>
     <id>https://softlns.github.io/2016/12/06/s3fs-guide/</id>
     <published>2016-12-06T03:20:12.000Z</published>
-    <updated>2016-12-06T03:22:48.245Z</updated>
+    <updated>2016-12-06T10:04:30.716Z</updated>
     
     <content type="html"><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>KS3（Kingsoft Standard Storage Service）服务是一个对象存储类服务。类似于网盘，可以通过网络随时随地的获取存储数据。金山云为用户管理KS3存储桶提供了两种控制管理方式：金山云的后台Consol、金山云官方KS3的SDK。</p>
 <p>相比于以上两种使用场景，在实际的开发应用中，常常还有这样的场景：把KS3存储桶mount到本地文件系统，使得用户可以像操作文件目录一样操作KS3的对象。</p>
@@ -33,7 +33,7 @@
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="配置KS3秘钥"><a href="#配置KS3秘钥" class="headerlink" title="配置KS3秘钥"></a>配置KS3秘钥</h3><p>配置KS3的KS3ACCESSKEYID、KS3SECRETACCESSKEY信息，并将其存储在/etc/passwd-s3fs 文件中<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> KS3ACCESSKEYID:KS3SECRETACCESSKEY &gt; /etc/passwd<span class="_">-s</span>3fs</div></pre></td></tr></table></figure></p>
 <p>修改秘钥文件权限，来限制访问：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod 640 /etc/passwd<span class="_">-s</span>3fs</div></pre></td></tr></table></figure></p>
 <h3 id="挂载KS3存储桶"><a href="#挂载KS3存储桶" class="headerlink" title="挂载KS3存储桶"></a>挂载KS3存储桶</h3><p>将KS3 bucket 挂载到指定目录<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">s3fs &lt;your-ks3-bucket-name&gt; &lt;your-mount-point&gt;  -o url=&lt;your-ks3-endpoint&gt;</div></pre></td></tr></table></figure></p>
-<h3 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h3><p>将KS3北京region的 ks3-fs-test 存储桶挂载到本地 /mnt/ks3 目录下， Ks3AccesskeyId 是 sgyO124X+/ZRbmgrbP7d，Ks3SecretAccessKey 是  p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH， ks3 endpoint是： <a href="http://ks3-cn-shanghai-internal.ksyun.com" target="_blank" rel="external">http://ks3-cn-shanghai-internal.ksyun.com</a> 。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> sgyO124X+/ZRbmgrbP7d:p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH &gt; /etc/passwd<span class="_">-s</span>3fs</div><div class="line">chmod 640 /etc/passwd<span class="_">-s</span>3fs</div><div class="line">mkdir /mnt/ks3</div><div class="line">ossfs ks3-fs-test  /mnt/ks3 -o url=http://ks3-cn-shanghai-internal.ksyun.com</div></pre></td></tr></table></figure></p>
+<h3 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h3><p>将KS3北京region的 ks3-fs-test 存储桶挂载到本地 /mnt/ks3 目录下， Ks3AccesskeyId 是 sgyO124X+/ZRbmgrbP7d，Ks3SecretAccessKey 是  p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH， ks3 endpoint是： <a href="http://ks3-cn-shanghai-internal.ksyun.com" target="_blank" rel="external">http://ks3-cn-shanghai-internal.ksyun.com</a> 。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> sgyO124X+/ZRbmgrbP7d:p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH &gt; /etc/passwd<span class="_">-s</span>3fs</div><div class="line">chmod 640 /etc/passwd<span class="_">-s</span>3fs</div><div class="line">mkdir /mnt/ks3</div><div class="line">s3fs ks3-fs-test  /mnt/ks3 -o url=http://ks3-cn-shanghai-internal.ksyun.com</div></pre></td></tr></table></figure></p>
 <h3 id="卸载bucket"><a href="#卸载bucket" class="headerlink" title="卸载bucket:"></a>卸载bucket:</h3><p>fusermount -u /mnt/s3fs</p>
 <h3 id="功能支持"><a href="#功能支持" class="headerlink" title="功能支持"></a>功能支持</h3><table>
 <thead>
@@ -208,7 +208,7 @@
 <h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><h3 id="1"><a href="#1" class="headerlink" title="1"></a>1</h3><ul>
 <li>Q: s3fs适合什么样的程序？<br>s3fs能把ks3 bucket挂载到本地，如果您使用的软件没有支持KS3，但您又想让数据能自动同步到KS3，那么s3fs是一个很好的选择。<h3 id="2"><a href="#2" class="headerlink" title="2"></a>2</h3></li>
 <li>Q: s3fs一定要金山云的机器才能用么？<br>s3fs不限制一定要金山云的内网才可以使用，外网机器依然可以使用。只是内网机房有KS3的专线，保证了KS3的访问速度。<h3 id="3"><a href="#3" class="headerlink" title="3"></a>3</h3></li>
-<li>Q: s3fs如何Debug？<br>您可以使用在挂载时，加上-d -o f2参数，ossfs会把日志写入到系统日志中。在centos系统中，在/var/log/messages中。<br>您也可以在挂载时使用-f -d -o f2参数，ossfs会把日志输出到屏幕上。<h3 id="4"><a href="#4" class="headerlink" title="4"></a>4</h3></li>
+<li>Q: s3fs如何Debug？<br>您可以使用在挂载时，加上-d -o f2参数，s3fs会把日志写入到系统日志中。在centos系统中，在/var/log/messages中。<br>您也可以在挂载时使用-f -d -o f2参数，s3fs会把日志输出到屏幕上。<h3 id="4"><a href="#4" class="headerlink" title="4"></a>4</h3></li>
 <li>Q: s3fs提示s3fs: unable to access MOUNTPOINT /mnt/ks3: No such file or directory</li>
 </ul>
 <h3 id="5"><a href="#5" class="headerlink" title="5"></a>5</h3><ul>
@@ -220,16 +220,16 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">   mkdir /root/s3fs_scripts</div><div class="line">vi /root/s3fs_scripts/start_s3fs.sh</div><div class="line">   <span class="comment"># contents of start_s3fs.sh</span></div><div class="line">    s3fs ks3<span class="built_in">test</span> /mnt/ks3 <span class="_">-f</span> -o passwd_file=/home/lain/passwd-ks3fs -o multipart_size=100 -o parallel_count=10 -o sigv2 -o curldbg -o url=http://ks3-cn-shanghai-internal.ksyun.com</div></pre></td></tr></table></figure>
 </li>
 <li><p>编辑/etc/supervisor/supervisord.conf，在最后加入下面一段：</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[program:ossfs]</div><div class="line"><span class="built_in">command</span>=bash /root/s3fs_scripts/start_s3fs.sh</div><div class="line">logfile=/var/<span class="built_in">log</span>/s3fs.log</div><div class="line">log_stdout=<span class="literal">true</span></div><div class="line">log_stderr=<span class="literal">true</span></div><div class="line">logfile_maxbytes=1MB</div><div class="line">logfile_backups=10</div></pre></td></tr></table></figure>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[program:s3fs]</div><div class="line"><span class="built_in">command</span>=bash /root/s3fs_scripts/start_s3fs.sh</div><div class="line">logfile=/var/<span class="built_in">log</span>/s3fs.log</div><div class="line">log_stdout=<span class="literal">true</span></div><div class="line">log_stderr=<span class="literal">true</span></div><div class="line">logfile_maxbytes=1MB</div><div class="line">logfile_backups=10</div></pre></td></tr></table></figure>
 </li>
 <li><p>运行supervisor：</p>
  <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">supervisord</div></pre></td></tr></table></figure>
 </li>
 <li><p>确认一切正常：</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ps aux | grep supervisor  # 应该能看到supervisor进程</div><div class="line">ps aux | grep s3fs        # 应该能看到s3fs进程</div><div class="line">killall s3fs              # 杀掉s3fs进程，supervisor应该会重启它</div><div class="line">ps aux | grep ossfs      # 应该能看到s3fs进程</div></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ps aux | grep supervisor  # 应该能看到supervisor进程</div><div class="line">ps aux | grep s3fs        # 应该能看到s3fs进程</div><div class="line">killall s3fs              # 杀掉s3fs进程，supervisor应该会重启它</div><div class="line">ps aux | grep s3fs      # 应该能看到s3fs进程</div></pre></td></tr></table></figure>
+<p> 如果出错，请检查/var/log/supervisor/supervisord.log和/var/log/s3fs.log。</p>
 </li>
 </ol>
-<p>如果出错，请检查/var/log/supervisor/supervisord.log和/var/log/ossfs.log。</p>
 ]]></content>
     
     <summary type="html">
