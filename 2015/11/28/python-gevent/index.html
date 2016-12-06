@@ -1,0 +1,1347 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python,Gevent,协程," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Lain's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前述进程 线程 协程 异步并发编程（不是并行）目前有四种方式：多进程、多线程、协程和异步。
+
+多进程编程在python中有类似C的os.fork,更高层封装的有multiprocessing标准库
+多线程编程python中有Thread和threading
+异步编程在linux下主+要有三种实现select，poll，epoll
+协程在python中通常会说到yield，关于协程的库主要有gree">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gevent简明教程">
+<meta property="og:url" content="https://softlns.github.io/2015/11/28/python-gevent/index.html">
+<meta property="og:site_name" content="Lain's Blog">
+<meta property="og:description" content="前述进程 线程 协程 异步并发编程（不是并行）目前有四种方式：多进程、多线程、协程和异步。
+
+多进程编程在python中有类似C的os.fork,更高层封装的有multiprocessing标准库
+多线程编程python中有Thread和threading
+异步编程在linux下主+要有三种实现select，poll，epoll
+协程在python中通常会说到yield，关于协程的库主要有gree">
+<meta property="og:image" content="http://xlambda.com/gevent-tutorial/flow.gif">
+<meta property="og:updated_time" content="2016-12-05T09:46:53.259Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Gevent简明教程">
+<meta name="twitter:description" content="前述进程 线程 协程 异步并发编程（不是并行）目前有四种方式：多进程、多线程、协程和异步。
+
+多进程编程在python中有类似C的os.fork,更高层封装的有multiprocessing标准库
+多线程编程python中有Thread和threading
+异步编程在linux下主+要有三种实现select，poll，epoll
+协程在python中通常会说到yield，关于协程的库主要有gree">
+<meta name="twitter:image" content="http://xlambda.com/gevent-tutorial/flow.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '6342352355521988000',
+      author: 'Lain'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://softlns.github.io/2015/11/28/python-gevent/"/>
+
+
+
+
+
+  <title> Gevent简明教程 | Lain's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Lain's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">藏剑于身 待时而动</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-board">
+          <a href="/board" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-commenting"></i> <br />
+            
+            留言板
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://softlns.github.io/2015/11/28/python-gevent/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Lain">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Lain's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Lain's Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Gevent简明教程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-11-28T20:42:34+08:00">
+                2015-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2015/11/28/python-gevent/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/11/28/python-gevent/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+            <span id="/2015/11/28/python-gevent/" class="leancloud_visitors"  data-flag-title="Gevent简明教程">
+              &nbsp; | &nbsp; 阅读次数
+            </span>
+          
+
+          
+          
+             <span id="/2015/11/28/python-gevent/" class="leancloud_visitors" data-flag-title="Gevent简明教程">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前述"><a href="#前述" class="headerlink" title="前述"></a>前述</h2><h3 id="进程-线程-协程-异步"><a href="#进程-线程-协程-异步" class="headerlink" title="进程 线程 协程 异步"></a>进程 线程 协程 异步</h3><p>并发编程（不是并行）目前有四种方式：多进程、多线程、协程和异步。</p>
+<ul>
+<li>多进程编程在python中有类似C的os.fork,更高层封装的有multiprocessing标准库</li>
+<li>多线程编程python中有Thread和threading</li>
+<li>异步编程在linux下主+要有三种实现select，poll，epoll</li>
+<li>协程在python中通常会说到yield，关于协程的库主要有greenlet,stackless,gevent,eventlet等实现。</li>
+</ul>
+<a id="more"></a>
+<h4 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h4><ul>
+<li>不共享任何状态</li>
+<li>调度由操作系统完成</li>
+<li>有独立的内存空间（上下文切换的时候需要保存栈、cpu寄存器、虚拟内存、以及打开的相关句柄等信息，开销大）</li>
+<li>通讯主要通过信号传递的方式来实现（实现方式有多种，信号量、管道、事件等，通讯都需要过内核，效率低）</li>
+</ul>
+<h4 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h4><ul>
+<li>共享变量（解决了通讯麻烦的问题，但是对于变量的访问需要加锁）</li>
+<li>调度由操作系统完成（由于共享内存，上下文切换变得高效）</li>
+<li>一个进程可以有多个线程，每个线程会共享父进程的资源（创建线程开销占用比进程小很多，可创建的数量也会很多）</li>
+<li>通讯除了可使用进程间通讯的方式，还可以通过共享内存的方式进行通信（通过共享内存通信比通过内核要快很多）</li>
+</ul>
+<h4 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h4><ul>
+<li>调度完全由用户控制</li>
+<li>一个线程（进程）可以有多个协程</li>
+<li>每个线程（进程）循环按照指定的任务清单顺序完成不同的任务（当任务被堵塞时，执行下一个任务；当恢复时，再回来执行这个任务；任务间切换只需要保存任务的上下文，没有内核的开销，可以不加锁的访问全局变量）</li>
+<li>协程需要保证是非堵塞的且没有相互依赖</li>
+<li>协程基本上不能同步通讯，多采用异步的消息通讯，效率比较高</li>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li>进程拥有自己独立的堆和栈，既不共享堆，亦不共享栈，进程由操作系统调度</li>
+<li>线程拥有自己独立的栈和共享的堆，共享堆，不共享栈，线程亦由操作系统调度(标准线程是的)</li>
+<li>协程和线程一样共享堆，不共享栈，协程由程序员在协程的代码里显示调度</li>
+</ul>
+<h3 id="聊聊协程"><a href="#聊聊协程" class="headerlink" title="聊聊协程"></a>聊聊协程</h3><p>协程，又称微线程，纤程。<br>Python的线程并不是标准线程，是系统级进程，线程间上下文切换有开销，而且Python在执行多线程时默认加了一个全局解释器锁（GIL），因此Python的多线程其实是串行的，所以并不能利用多核的优势，也就是说一个进程内的多个线程只能使用一个CPU。</p>
+<pre><code>def coroutine(func):
+    def ret():
+        f = func()
+        f.next()
+        return f
+    return ret
+
+
+@coroutine
+def consumer():
+    print &quot;Wait to getting a task&quot;
+    while True:
+        n = (yield)
+        print &quot;Got %s&quot;,n
+
+
+import time
+def producer():
+    c = consumer()
+    task_id = 0
+    while True:
+        time.sleep(1)
+        print &quot;Send a task to consumer&quot; % task_id
+        c.send(&quot;task %s&quot; % task_id)
+
+if __name__ == &quot;__main__&quot;:
+    producer()
+</code></pre><p>  结果：</p>
+<pre><code>Wait to getting a task
+Send a task 0 to consumer
+Got task 0
+Send a task 1 to consumer
+Got task 1
+Send a task 2 to consumer
+Got task 2
+...
+</code></pre><p> 传统的生产者-消费者模型是一个线程写消息，一个线程取消息，通过锁机制控制队列和等待，但容易死锁。<br>如果改用协程，生产者生产消息后，直接通过yield跳转到消费者开始执行，待消费者执行完毕后，切换回生产者继续生产，效率极高。</p>
+<h2 id="Gevent"><a href="#Gevent" class="headerlink" title="Gevent"></a>Gevent</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>gevent是基于协程的Python网络库。特点：</p>
+<ul>
+<li>基于libev的快速事件循环(Linux上epoll，FreeBSD上kqueue）。</li>
+<li>基于greenlet的轻量级执行单元。</li>
+<li>API的概念和Python标准库一致(如事件，队列)。</li>
+<li>可以配合socket，ssl模块使用。</li>
+<li>能够使用标准库和第三方模块创建标准的阻塞套接字(gevent.monkey)。</li>
+<li>默认通过线程池进行DNS查询,也可通过c-are(通过GEVENT_RESOLVER=ares环境变量开启）。</li>
+<li>TCP/UDP/HTTP服务器</li>
+<li>子进程支持（通过gevent.subprocess）</li>
+<li>线程池</li>
+</ul>
+<h3 id="安装和依赖"><a href="#安装和依赖" class="headerlink" title="安装和依赖"></a>安装和依赖</h3><p>依赖于greenlet library<br>支持python 2.6+ 、3.3+</p>
+<h3 id="核心部分"><a href="#核心部分" class="headerlink" title="核心部分"></a>核心部分</h3><ul>
+<li>Greenlets</li>
+<li>同步和异步执行</li>
+<li>确定性</li>
+<li>创建Greenlets</li>
+<li>Greenlet状态</li>
+<li>程序停止</li>
+<li>超时</li>
+<li>猴子补丁</li>
+</ul>
+<p>####Greenlets<br>gevent中的主要模式, 它是以C扩展模块形式接入Python的轻量级协程。 全部运行在主程序操作系统进程的内部，但它们被程序员协作式地调度。</p>
+<blockquote>
+<p>在任何时刻，只有一个协程在运行。</p>
+</blockquote>
+<p>区别于multiprocessing、threading等提供真正并行构造的库， 这些库轮转使用操作系统调度的进程和线程，是真正的并行。</p>
+<h4 id="同步和异步执行"><a href="#同步和异步执行" class="headerlink" title="同步和异步执行"></a>同步和异步执行</h4><p>并发的核心思想在于，大的任务可以分解成一系列的子任务，后者可以被调度成 同时执行或异步执行，而不是一次一个地或者同步地执行。两个子任务之间的 切换也就是上下文切换。</p>
+<p>在gevent里面，上下文切换是通过yielding来完成的.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">()</span>:</span></div><div class="line">    print(<span class="string">'Running in foo'</span>)</div><div class="line">    gevent.sleep(<span class="number">0</span>)</div><div class="line">    print(<span class="string">'Explicit context switch to foo again'</span>)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">bar</span><span class="params">()</span>:</span></div><div class="line">    print(<span class="string">'Explicit context to bar'</span>)</div><div class="line">    gevent.sleep(<span class="number">0</span>)</div><div class="line">    print(<span class="string">'Implicit context switch back to bar'</span>)</div><div class="line"></div><div class="line">gevent.joinall([</div><div class="line">    gevent.spawn(foo),</div><div class="line">    gevent.spawn(bar),</div><div class="line">])</div></pre></td></tr></table></figure></p>
+<p>执行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Running <span class="keyword">in</span> foo</div><div class="line">Explicit context to bar</div><div class="line">Explicit context switch to foo again</div><div class="line">Implicit context switch back to bar</div></pre></td></tr></table></figure></p>
+<p>代码执行过程：</p>
+<p><img src="http://xlambda.com/gevent-tutorial/flow.gif" alt="Alt text"></p>
+<p>网络延迟或IO阻塞隐式交出greenlet上下文的执行权。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> time</div><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> select</div><div class="line"></div><div class="line">start = time.time()</div><div class="line">tic = <span class="keyword">lambda</span>: <span class="string">'at %1.1f seconds'</span> % (time.time() - start)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">gr1</span><span class="params">()</span>:</span></div><div class="line">    print(<span class="string">'Started Polling: %s'</span> % tic())</div><div class="line">    select.select([], [], [], <span class="number">1</span>)</div><div class="line">    print(<span class="string">'Ended Polling: %s'</span> % tic())</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">gr2</span><span class="params">()</span>:</span></div><div class="line">    print(<span class="string">'Started Polling: %s'</span> % tic())</div><div class="line">    select.select([], [], [], <span class="number">2</span>)</div><div class="line">    print(<span class="string">'Ended Polling: %s'</span> % tic())</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">gr3</span><span class="params">()</span>:</span></div><div class="line">    print(<span class="string">"Hey lets do some stuff while the greenlets poll, %s"</span> % tic())</div><div class="line">    gevent.sleep(<span class="number">1</span>)</div><div class="line"></div><div class="line">gevent.joinall([</div><div class="line">    gevent.spawn(gr1),</div><div class="line">    gevent.spawn(gr2),</div><div class="line">    gevent.spawn(gr3),</div><div class="line">])</div></pre></td></tr></table></figure></p>
+<p>执行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Started Polling: at 0.0 seconds</div><div class="line">Started Polling: at 0.0 seconds</div><div class="line">Hey lets <span class="keyword">do</span> some stuff <span class="keyword">while</span> the greenlets poll, at 0.0 seconds</div><div class="line">Ended Polling: at 1.0 seconds</div><div class="line">Ended Polling: at 2.0 seconds</div></pre></td></tr></table></figure></p>
+<p>同步vs异步<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">import</span> random</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">task</span><span class="params">(pid)</span>:</span></div><div class="line">    gevent.sleep(random.randint(<span class="number">0</span>,<span class="number">2</span>)*<span class="number">0.001</span>)</div><div class="line">    print(<span class="string">'Task %s done'</span> % pid)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">synchronous</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">5</span>):</div><div class="line">        task(i)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">asynchronous</span><span class="params">()</span>:</span></div><div class="line">    threads = [gevent.spawn(task, i) <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">5</span>)]</div><div class="line">    gevent.joinall(threads)</div><div class="line"></div><div class="line">    print(<span class="string">'Synchronous:'</span>)</div><div class="line">    synchronous()</div><div class="line"></div><div class="line">    print(<span class="string">'Asynchronous:'</span>)</div><div class="line">    asynchronous()</div></pre></td></tr></table></figure></p>
+<p>执行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Synchronous:</div><div class="line">Task 0 <span class="keyword">done</span></div><div class="line">Task 1 <span class="keyword">done</span></div><div class="line">Task 2 <span class="keyword">done</span></div><div class="line">Task 3 <span class="keyword">done</span></div><div class="line">Task 4 <span class="keyword">done</span></div><div class="line">Asynchronous:</div><div class="line">Task 2 <span class="keyword">done</span></div><div class="line">Task 0 <span class="keyword">done</span></div><div class="line">Task 1 <span class="keyword">done</span></div><div class="line">Task 3 <span class="keyword">done</span></div><div class="line">Task 4 <span class="keyword">done</span></div></pre></td></tr></table></figure></p>
+<h4 id="确定性"><a href="#确定性" class="headerlink" title="确定性"></a>确定性</h4><p>greenlet具有确定性。在相同配置相同输入的情况下，它们总是会产生相同的输出。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> time</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">echo</span><span class="params">(i)</span>:</span></div><div class="line">    time.sleep(<span class="number">0.001</span>)</div><div class="line">    <span class="keyword">return</span> i</div><div class="line"></div><div class="line"><span class="comment"># Non Deterministic Process Pool</span></div><div class="line"><span class="keyword">from</span> multiprocessing.pool <span class="keyword">import</span> Pool</div><div class="line"></div><div class="line">p = Pool(<span class="number">10</span>)</div><div class="line">run1 = [a <span class="keyword">for</span> a <span class="keyword">in</span> p.imap_unordered(echo, xrange(<span class="number">10</span>))]</div><div class="line">run2 = [a <span class="keyword">for</span> a <span class="keyword">in</span> p.imap_unordered(echo, xrange(<span class="number">10</span>))]</div><div class="line">run3 = [a <span class="keyword">for</span> a <span class="keyword">in</span> p.imap_unordered(echo, xrange(<span class="number">10</span>))]</div><div class="line">run4 = [a <span class="keyword">for</span> a <span class="keyword">in</span> p.imap_unordered(echo, xrange(<span class="number">10</span>))]</div><div class="line"></div><div class="line">print(run1 == run2 == run3 == run4)</div><div class="line"></div><div class="line"><span class="comment"># Deterministic Gevent Pool</span></div><div class="line"><span class="keyword">from</span> gevent.pool <span class="keyword">import</span> Pool</div><div class="line"></div><div class="line">p = Pool(<span class="number">10</span>)</div><div class="line">run1 = [a <span class="keyword">for</span> a <span class="keyword">in</span> p.imap_unordered(echo, xrange(<span class="number">10</span>))]</div><div class="line">run2 = [a <span class="keyword">for</span> a <span class="keyword">in</span> p.imap_unordered(echo, xrange(<span class="number">10</span>))]</div><div class="line">run3 = [a <span class="keyword">for</span> a <span class="keyword">in</span> p.imap_unordered(echo, xrange(<span class="number">10</span>))]</div><div class="line">run4 = [a <span class="keyword">for</span> a <span class="keyword">in</span> p.imap_unordered(echo, xrange(<span class="number">10</span>))]</div><div class="line"></div><div class="line">print(run1 == run2 == run3 == run4)</div></pre></td></tr></table></figure>
+<p>执行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">False</div><div class="line">True</div></pre></td></tr></table></figure></p>
+<p>即使gevent通常带有确定性，当开始与如socket或文件等外部服务交互时， 不确定性也可能溜进你的程序中。因此尽管gevent线程是一种“确定的并发”形式， 使用它仍然可能会遇到像使用POSIX线程或进程时遇到的那些问题。</p>
+<p>涉及并发长期存在的问题就是竞争条件(race condition)(当两个并发线程/进程都依赖于某个共享资源同时都尝试去修改它的时候， 就会出现竞争条件),这会导致资源修改的结果状态依赖于时间和执行顺序。 这个问题，会导致整个程序行为变得不确定。</p>
+<p>解决办法: 始终避免所有全局的状态.</p>
+<h4 id="创建Greenlets"><a href="#创建Greenlets" class="headerlink" title="创建Greenlets"></a>创建Greenlets</h4><p>gevent对Greenlet初始化提供了一些封装.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> Greenlet</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(message, n)</span>:</span></div><div class="line">    gevent.sleep(n)</div><div class="line">    print(message)</div><div class="line"></div><div class="line">    thread1 = Greenlet.spawn(foo, <span class="string">"Hello"</span>, <span class="number">1</span>)</div><div class="line">    thread2 = gevent.spawn(foo, <span class="string">"I live!"</span>, <span class="number">2</span>)</div><div class="line">    thread3 = gevent.spawn(<span class="keyword">lambda</span> x: (x+<span class="number">1</span>), <span class="number">2</span>)</div><div class="line">    threads = [thread1, thread2, thread3]</div><div class="line">    gevent.joinall(threads)</div></pre></td></tr></table></figure></p>
+<p>执行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Hello</div><div class="line">I live!</div></pre></td></tr></table></figure></p>
+<p>除使用基本的Greenlet类之外，你也可以子类化Greenlet类，重载它的_run方法。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> Greenlet</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyGreenlet</span><span class="params">(Greenlet)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, message, n)</span>:</span></div><div class="line">        Greenlet.__init__(self)</div><div class="line">        self.message = message</div><div class="line">        self.n = n</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_run</span><span class="params">(self)</span>:</span></div><div class="line">        print(self.message)</div><div class="line">        gevent.sleep(self.n)</div><div class="line"></div><div class="line">g = MyGreenlet(<span class="string">"Hi there!"</span>, <span class="number">3</span>)</div><div class="line">g.start()</div><div class="line">g.join()</div></pre></td></tr></table></figure></p>
+<p>执行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Hi there!</div></pre></td></tr></table></figure></p>
+<h4 id="Greenlet状态"><a href="#Greenlet状态" class="headerlink" title="Greenlet状态"></a>Greenlet状态</h4><p>greenlet的状态通常是一个依赖于时间的参数：</p>
+<ul>
+<li>started – Boolean, 指示此Greenlet是否已经启动</li>
+<li>ready() – Boolean, 指示此Greenlet是否已经停止</li>
+<li>successful() – Boolean, 指示此Greenlet是否已经停止而且没抛异常</li>
+<li>value – 任意值, 此Greenlet代码返回的值</li>
+<li>exception – 异常, 此Greenlet内抛出的未捕获异常</li>
+</ul>
+<h4 id="程序停止"><a href="#程序停止" class="headerlink" title="程序停止"></a>程序停止</h4><p>程序<br>当主程序(main program)收到一个SIGQUIT信号时，不能成功做yield操作的 Greenlet可能会令意外地挂起程序的执行。这导致了所谓的僵尸进程， 它需要在Python解释器之外被kill掉。</p>
+<p>通用的处理模式就是在主程序中监听SIGQUIT信号，调用gevent.shutdown退出程序。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">import</span> signal</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">run_forever</span><span class="params">()</span>:</span></div><div class="line">    gevent.sleep(<span class="number">1000</span>)</div><div class="line"></div><div class="line">    <span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">        gevent.signal(signal.SIGQUIT, gevent.shutdown)</div><div class="line">        thread = gevent.spawn(run_forever)</div><div class="line">        thread.join()</div></pre></td></tr></table></figure></p>
+<h4 id="超时"><a href="#超时" class="headerlink" title="超时"></a>超时</h4><p>通过超时可以对代码块儿或一个Greenlet的运行时间进行约束。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> Timeout</div><div class="line"></div><div class="line">seconds = <span class="number">10</span></div><div class="line"></div><div class="line">timeout = Timeout(seconds)</div><div class="line">timeout.start()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">wait</span><span class="params">()</span>:</span></div><div class="line">    gevent.sleep(<span class="number">10</span>)</div><div class="line"></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        gevent.spawn(wait).join()</div><div class="line">    <span class="keyword">except</span> Timeout:</div><div class="line">        print(<span class="string">'Could not complete'</span>)</div></pre></td></tr></table></figure></p>
+<p>超时类<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> Timeout</div><div class="line"></div><div class="line">time_to_wait = <span class="number">5</span> <span class="comment"># seconds</span></div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">TooLong</span><span class="params">(Exception)</span>:</span></div><div class="line">        <span class="keyword">pass</span></div><div class="line"></div><div class="line">    <span class="keyword">with</span> Timeout(time_to_wait, TooLong):</div><div class="line">        gevent.sleep(<span class="number">10</span>)</div></pre></td></tr></table></figure></p>
+<p>另外，对各种Greenlet和数据结构相关的调用，gevent也提供了超时参数。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> Timeout</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">wait</span><span class="params">()</span>:</span></div><div class="line">    gevent.sleep(<span class="number">2</span>)</div><div class="line"></div><div class="line">timer = Timeout(<span class="number">1</span>).start()</div><div class="line">thread1 = gevent.spawn(wait)</div><div class="line"></div><div class="line"><span class="keyword">try</span>:</div><div class="line">    thread1.join(timeout=timer)</div><div class="line"><span class="keyword">except</span> Timeout:</div><div class="line">    print(<span class="string">'Thread 1 timed out'</span>)</div><div class="line"></div><div class="line"><span class="comment"># --</span></div><div class="line"></div><div class="line">timer = Timeout.start_new(<span class="number">1</span>)</div><div class="line">thread2 = gevent.spawn(wait)</div><div class="line"></div><div class="line"><span class="keyword">try</span>:</div><div class="line">    thread2.get(timeout=timer)</div><div class="line"><span class="keyword">except</span> Timeout:</div><div class="line">    print(<span class="string">'Thread 2 timed out'</span>)</div><div class="line"></div><div class="line"><span class="comment"># --</span></div><div class="line"></div><div class="line"><span class="keyword">try</span>:</div><div class="line">    gevent.with_timeout(<span class="number">1</span>, wait)</div><div class="line"><span class="keyword">except</span> Timeout:</div><div class="line">    print(<span class="string">'Thread 3 timed out'</span>)</div></pre></td></tr></table></figure></p>
+<p>执行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Thread 1 timed out</div><div class="line">Thread 2 timed out</div><div class="line">Thread 3 timed out</div></pre></td></tr></table></figure></p>
+<h4 id="猴子补丁-Monkey-patching"><a href="#猴子补丁-Monkey-patching" class="headerlink" title="猴子补丁(Monkey patching)"></a>猴子补丁(Monkey patching)</h4><p>gevent的死角.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> socket</div><div class="line">print(socket.socket)</div><div class="line"></div><div class="line">print(<span class="string">"After monkey patch"</span>)</div><div class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</div><div class="line">monkey.patch_socket()</div><div class="line">print(socket.socket)</div><div class="line"></div><div class="line"><span class="keyword">import</span> select</div><div class="line">print(select.select)</div><div class="line">monkey.patch_select()</div><div class="line">print(<span class="string">"After monkey patch"</span>)</div><div class="line">print(select.select)</div></pre></td></tr></table></figure></p>
+<p>执行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">class <span class="string">'socket.socket'</span></div><div class="line">After monkey patch</div><div class="line">class <span class="string">'gevent.socket.socket'</span></div><div class="line"></div><div class="line">built-in <span class="keyword">function</span> select</div><div class="line">After monkey patch</div><div class="line"><span class="keyword">function</span> select at 0x1924de8</div></pre></td></tr></table></figure></p>
+<p>Python的运行环境允许我们在运行时修改大部分的对象，包括模块，类甚至函数。 这是个一般说来令人惊奇的坏主意，因为它创造了“隐式的副作用”，如果出现问题 它很多时候是极难调试的。虽然如此，在极端情况下当一个库需要修改Python本身 的基础行为的时候，猴子补丁就派上用场了。在这种情况下，gevent能够修改标准库里面大部分的阻塞式系统调用，包括socket、ssl、threading和 select等模块，而变为协作式运行。</p>
+<p>例如，Redis的python绑定一般使用常规的tcp socket来与redis-server实例通信。 通过简单地调用gevent.monkey.patch_all()，可以使得redis的绑定协作式的调度 请求，与gevent栈的其它部分一起工作。</p>
+<p>这让我们可以将一般不能与gevent共同工作的库结合起来，而不用写哪怕一行代码。 虽然猴子补丁仍然是邪恶的(evil)，但在这种情况下它是“有用的邪恶(useful evil)”。</p>
+<h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><ul>
+<li>事件</li>
+<li>队列</li>
+<li>组和池</li>
+<li>锁和信号量</li>
+<li>线程局部变量</li>
+<li>子进程</li>
+<li>Actors<h4 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h4>事件(event)是一个在Greenlet之间异步通信的形式。<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent.event <span class="keyword">import</span> Event</div><div class="line">	</div><div class="line">evt = Event()</div><div class="line">	</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">setter</span><span class="params">()</span>:</span></div><div class="line">    print(<span class="string">'A: Hey wait for me, I have to do something'</span>)</div><div class="line">    gevent.sleep(<span class="number">3</span>)</div><div class="line">    print(<span class="string">"Ok, I'm done"</span>)</div><div class="line">    evt.set()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">waiter</span><span class="params">()</span>:</span></div><div class="line">    print(<span class="string">"I'll wait for you"</span>)</div><div class="line">    evt.wait()  <span class="comment"># blocking</span></div><div class="line">    print(<span class="string">"It's about time"</span>)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    gevent.joinall([</div><div class="line">        gevent.spawn(setter),</div><div class="line">        gevent.spawn(waiter),</div><div class="line">        gevent.spawn(waiter),</div><div class="line">        gevent.spawn(waiter)</div><div class="line">    ])</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>: </div><div class="line">    main()</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>执行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">A: Hey wait for me, I have to do something</div><div class="line">I&apos;ll wait for you</div><div class="line">I&apos;ll wait for you</div><div class="line">I&apos;ll wait for you</div><div class="line">Ok, I&apos;m done</div><div class="line">It&apos;s about time</div><div class="line">It&apos;s about time</div><div class="line">It&apos;s about time</div></pre></td></tr></table></figure></p>
+<p>事件对象的一个扩展是AsyncResult，它允许你在唤醒调用上附加一个值。 它有时也被称作是future或defered，因为它持有一个指向将来任意时间可设置为任何值的引用。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent.event <span class="keyword">import</span> AsyncResult</div><div class="line">a = AsyncResult()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">setter</span><span class="params">()</span>:</span></div><div class="line">    gevent.sleep(<span class="number">3</span>)</div><div class="line">    a.set(<span class="string">'Hello!'</span>)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">waiter</span><span class="params">()</span>:</span></div><div class="line">    print(a.get())</div><div class="line"></div><div class="line">gevent.joinall([</div><div class="line">    gevent.spawn(setter),</div><div class="line">    gevent.spawn(waiter),</div><div class="line">])</div></pre></td></tr></table></figure></p>
+<h4 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h4><p>队列是一个排序的数据集合，它有常见的put / get操作， 但是它是以在Greenlet之间可以安全操作的方式来实现的。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent.queue <span class="keyword">import</span> Queue</div><div class="line"></div><div class="line">tasks = Queue()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">worker</span><span class="params">(n)</span>:</span></div><div class="line">    <span class="keyword">while</span> <span class="keyword">not</span> tasks.empty():</div><div class="line">        task = tasks.get()</div><div class="line">        print(<span class="string">'Worker %s got task %s'</span> % (n, task))</div><div class="line">        gevent.sleep(<span class="number">0</span>)</div><div class="line">    print(<span class="string">'Quitting time!'</span>)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">boss</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">1</span>,<span class="number">10</span>):</div><div class="line">        tasks.put_nowait(i)</div><div class="line"></div><div class="line">gevent.spawn(boss).join()</div><div class="line"></div><div class="line">gevent.joinall([</div><div class="line">    gevent.spawn(worker, <span class="string">'steve'</span>),</div><div class="line">    gevent.spawn(worker, <span class="string">'john'</span>),</div><div class="line">    gevent.spawn(worker, <span class="string">'nancy'</span>),</div><div class="line">])</div></pre></td></tr></table></figure></p>
+<p>执行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Worker steve got task 1</div><div class="line">Worker john got task 2</div><div class="line">Worker nancy got task 3</div><div class="line">Worker steve got task 4</div><div class="line">Worker john got task 5</div><div class="line">Worker nancy got task 6</div><div class="line">Worker steve got task 7</div><div class="line">Worker john got task 8</div><div class="line">Worker nancy got task 9</div><div class="line">Quitting time!</div><div class="line">Quitting time!</div><div class="line">Quitting time!</div></pre></td></tr></table></figure></p>
+<p>put和get操作都是阻塞的，put_nowait和get_nowait不会阻塞， 然而在操作不能完成时抛出gevent.queue.Empty或gevent.queue.Full异常。</p>
+<h4 id="组和池"><a href="#组和池" class="headerlink" title="组和池"></a>组和池</h4><p>组(group)是一个运行中greenlet集合，集合中的greenlet像一个组一样会被共同管理和调度。 它也兼饰了像Python的multiprocessing库那样的平行调度器的角色，主要用在在管理异步任务的时候进行分组。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent.pool <span class="keyword">import</span> Group</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">talk</span><span class="params">(msg)</span>:</span></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">2</span>):</div><div class="line">        print(msg)</div><div class="line"></div><div class="line">g1 = gevent.spawn(talk, <span class="string">'bar'</span>)</div><div class="line">g2 = gevent.spawn(talk, <span class="string">'foo'</span>)</div><div class="line">g3 = gevent.spawn(talk, <span class="string">'fizz'</span>)</div><div class="line"></div><div class="line">group = Group()</div><div class="line">group.add(g1)</div><div class="line">group.add(g2)</div><div class="line">group.join()</div><div class="line"></div><div class="line">group.add(g3)</div><div class="line">group.join()</div></pre></td></tr></table></figure></p>
+<p>执行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">bar</div><div class="line">bar</div><div class="line">foo</div><div class="line">foo</div><div class="line">fizz</div><div class="line">fizz</div></pre></td></tr></table></figure></p>
+<p>池(pool)是一个为处理数量变化并且需要限制并发的greenlet而设计的结构。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent.pool <span class="keyword">import</span> Pool</div><div class="line"></div><div class="line">pool = Pool(<span class="number">2</span>)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello_from</span><span class="params">(n)</span>:</span></div><div class="line">    print(<span class="string">'Size of pool %s'</span> % len(pool))</div><div class="line"></div><div class="line">    pool.map(hello_from, xrange(<span class="number">3</span>))</div></pre></td></tr></table></figure></p>
+<p>执行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Size of pool 2</div><div class="line">Size of pool 2</div><div class="line">Size of pool 1</div></pre></td></tr></table></figure></p>
+<p>构造一个socket池的类，在各个socket上轮询。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> gevent.pool <span class="keyword">import</span> Pool</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SocketPool</span><span class="params">(object)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self.pool = Pool(<span class="number">10</span>)</div><div class="line">        self.pool.start()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">listen</span><span class="params">(self, socket)</span>:</span></div><div class="line">        <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">            socket.recv()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_handler</span><span class="params">(self, socket)</span>:</span></div><div class="line">        <span class="keyword">if</span> self.pool.full():</div><div class="line">            <span class="keyword">raise</span> Exception(<span class="string">"At maximum pool size"</span>)</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            self.pool.spawn(self.listen, socket)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">shutdown</span><span class="params">(self)</span>:</span></div><div class="line">        self.pool.kill()</div></pre></td></tr></table></figure></p>
+<h4 id="锁和信号量"><a href="#锁和信号量" class="headerlink" title="锁和信号量"></a>锁和信号量</h4><p>信号量是一个允许greenlet相互合作，限制并发访问或运行的低层次的同步原语。 信号量有两个方法，acquire和release。在信号量是否已经被 acquire或release，和拥有资源的数量之间不同，被称为此信号量的范围 (the bound of the semaphore)。如果一个信号量的范围已经降低到0，它会 阻塞acquire操作直到另一个已经获得信号量的greenlet作出释放。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> sleep</div><div class="line"><span class="keyword">from</span> gevent.pool <span class="keyword">import</span> Pool</div><div class="line"><span class="keyword">from</span> gevent.coros <span class="keyword">import</span> BoundedSemaphore</div><div class="line"></div><div class="line">sem = BoundedSemaphore(<span class="number">2</span>)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">worker1</span><span class="params">(n)</span>:</span></div><div class="line">    sem.acquire()</div><div class="line">    print(<span class="string">'Worker %i acquired semaphore'</span> % n)</div><div class="line">    sleep(<span class="number">0</span>)</div><div class="line">    sem.release()</div><div class="line">    print(<span class="string">'Worker %i released semaphore'</span> % n)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">worker2</span><span class="params">(n)</span>:</span></div><div class="line">    <span class="keyword">with</span> sem:</div><div class="line">        print(<span class="string">'Worker %i acquired semaphore'</span> % n)</div><div class="line">        sleep(<span class="number">0</span>)</div><div class="line">    print(<span class="string">'Worker %i released semaphore'</span> % n)</div><div class="line"></div><div class="line">pool = Pool()</div><div class="line">pool.map(worker1, xrange(<span class="number">0</span>,<span class="number">2</span>))</div></pre></td></tr></table></figure></p>
+<p>执行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Worker 0 acquired semaphore</div><div class="line">Worker 1 acquired semaphore</div><div class="line">Worker 0 released semaphore</div><div class="line">Worker 1 released semaphore</div></pre></td></tr></table></figure></p>
+<p>锁(lock)是范围为1的信号量。它向单个greenlet提供了互斥访问。 信号量和锁常被用来保证资源只在程序上下文被单次使用。</p>
+<h4 id="线程局部变量"><a href="#线程局部变量" class="headerlink" title="线程局部变量"></a>线程局部变量</h4><p>Gevent允许程序员指定局部于greenlet上下文的数据。 在内部，它被实现为以greenlet的getcurrent()为键， 在一个私有命名空间寻址的全局查找。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent.local <span class="keyword">import</span> local</div><div class="line"></div><div class="line">stash = local()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">f1</span><span class="params">()</span>:</span></div><div class="line">    stash.x = <span class="number">1</span></div><div class="line">    print(stash.x)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">f2</span><span class="params">()</span>:</span></div><div class="line">    stash.y = <span class="number">2</span></div><div class="line">    print(stash.y)</div><div class="line"></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        stash.x</div><div class="line">    <span class="keyword">except</span> AttributeError:</div><div class="line">        print(<span class="string">"x is not local to f2"</span>)</div><div class="line"></div><div class="line">g1 = gevent.spawn(f1)</div><div class="line">g2 = gevent.spawn(f2)</div><div class="line"></div><div class="line">gevent.joinall([g1, g2])</div></pre></td></tr></table></figure></p>
+<p>执行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1</div><div class="line">2</div><div class="line">x is not local to f2</div></pre></td></tr></table></figure></p>
+<p>很多集成了gevent的web框架将HTTP会话对象以线程局部变量的方式存储在gevent内。 例如使用Werkzeug实用库和它的proxy对象，我们可以创建Flask风格的请求对象。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> gevent.local <span class="keyword">import</span> local</div><div class="line"><span class="keyword">from</span> werkzeug.local <span class="keyword">import</span> LocalProxy</div><div class="line"><span class="keyword">from</span> werkzeug.wrappers <span class="keyword">import</span> Request</div><div class="line"><span class="keyword">from</span> contextlib <span class="keyword">import</span> contextmanager</div><div class="line"></div><div class="line"><span class="keyword">from</span> gevent.wsgi <span class="keyword">import</span> WSGIServer</div><div class="line"></div><div class="line">_requests = local()</div><div class="line">request = LocalProxy(<span class="keyword">lambda</span>: _requests.request)</div><div class="line"></div><div class="line"><span class="meta">@contextmanager</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">sessionmanager</span><span class="params">(environ)</span>:</span></div><div class="line">    _requests.request = Request(environ)</div><div class="line">    <span class="keyword">yield</span></div><div class="line">    _requests.request = <span class="keyword">None</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">logic</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> <span class="string">"Hello "</span> + request.remote_addr</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">application</span><span class="params">(environ, start_response)</span>:</span></div><div class="line">    status = <span class="string">'200 OK'</span></div><div class="line"></div><div class="line">    <span class="keyword">with</span> sessionmanager(environ):</div><div class="line">        body = logic()</div><div class="line"></div><div class="line">    headers = [</div><div class="line">        (<span class="string">'Content-Type'</span>, <span class="string">'text/html'</span>)</div><div class="line">    ]</div><div class="line"></div><div class="line">    start_response(status, headers)</div><div class="line">    <span class="keyword">return</span> [body]</div><div class="line">	WSGIServer((<span class="string">''</span>, <span class="number">8000</span>), application).serve_forever()</div></pre></td></tr></table></figure></p>
+<h4 id="子进程"><a href="#子进程" class="headerlink" title="子进程"></a>子进程</h4><p>从gevent 1.0起，支持gevent.subprocess，支持协作式的等待子进程。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent.subprocess <span class="keyword">import</span> Popen, PIPE</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">cron</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">        print(<span class="string">"cron"</span>)</div><div class="line">        gevent.sleep(<span class="number">0.2</span>)</div><div class="line"></div><div class="line">g = gevent.spawn(cron)</div><div class="line">sub = Popen([<span class="string">'sleep 1; uname'</span>], stdout=PIPE, shell=<span class="keyword">True</span>)</div><div class="line">out, err = sub.communicate()</div><div class="line">g.kill()</div><div class="line">print(out.rstrip())</div><div class="line">``` </div><div class="line"> 执行结果：</div></pre></td></tr></table></figure></p>
+<pre><code>cron
+cron
+cron
+cron
+cron
+Linux
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">很多人也想将gevent和multiprocessing一起使用。最明显的挑战之一 就是multiprocessing提供的进程间通信默认不是协作式的。由于基于 multiprocessing.Connection的对象(例如Pipe)暴露了它们下面的 文件描述符(file descriptor)，gevent.socket.wait_read和wait_write 可以用来在直接读写之前协作式的等待ready-to-read/ready-to-write事件。</div><div class="line"></div><div class="line">```python</div><div class="line">import gevent</div><div class="line">from multiprocessing import Process, Pipe</div><div class="line">from gevent.socket import wait_read, wait_write</div><div class="line"></div><div class="line"># To Process</div><div class="line">a, b = Pipe()</div><div class="line"></div><div class="line"># From Process</div><div class="line">c, d = Pipe()</div><div class="line"></div><div class="line">def relay():</div><div class="line">    for i in xrange(5):</div><div class="line">        msg = b.recv()</div><div class="line">        c.send(msg + &quot; in &quot; + str(i))</div><div class="line"></div><div class="line">def put_msg():</div><div class="line">    for i in xrange(5):</div><div class="line">        wait_write(a.fileno())</div><div class="line">        a.send(&apos;hi&apos;)</div><div class="line"></div><div class="line">def get_msg():</div><div class="line">    for i in xrange(5):</div><div class="line">        wait_read(d.fileno())</div><div class="line">        print(d.recv())</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    proc = Process(target=relay)</div><div class="line">    proc.start()</div><div class="line"></div><div class="line">    g1 = gevent.spawn(get_msg)</div><div class="line">    g2 = gevent.spawn(put_msg)</div><div class="line">    gevent.joinall([g1, g2], timeout=1)</div><div class="line">```	  </div><div class="line">执行结果：</div><div class="line">```	</div><div class="line">hi in 0</div><div class="line">hi in 1</div><div class="line">hi in 2</div><div class="line">hi in 3</div><div class="line">hi in 4</div></pre></td></tr></table></figure>
+<p>然而要注意，组合multiprocessing和gevent必定带来 依赖于操作系统(os-dependent)的缺陷，其中有：</p>
+<p>在兼容POSIX的系统创建子进程(forking)之后， 在子进程的gevent的状态是不适定的(ill-posed)。一个副作用就是， multiprocessing.Process创建之前的greenlet创建动作，会在父进程和子进程两方都运行。</p>
+<p>上例的put_msg()中的a.send()可能依然非协作式地阻塞调用的线程：一个 ready-to-write事件只保证写了一个byte。在尝试写完成之前底下的buffer可能是满的。</p>
+<p>上面表示的基于wait_write()/wait_read()的方法在Windows上不工作 (IOError: 3 is not a socket (files are not supported))，因为Windows不能监视 pipe事件。</p>
+<p>Python包gipc以大体上透明的方式在 兼容POSIX系统和Windows上克服了这些挑战。它提供了gevent感知的基于 multiprocessing.Process的子进程和gevent基于pipe的协作式进程间通信。</p>
+<h4 id="Actors"><a href="#Actors" class="headerlink" title="Actors"></a>Actors</h4><p>actor模型是一个由于Erlang变得普及的更高层的并发模型。 简单的说它的主要思想就是许多个独立的Actor，每个Actor有一个可以从 其它Actor接收消息的收件箱。Actor内部的主循环遍历它收到的消息，并根据它期望的行为来采取行动。</p>
+<p>Gevent没有原生的Actor类型，但在一个子类化的Greenlet内使用队列， 我们可以定义一个非常简单的。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent.queue <span class="keyword">import</span> Queue</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Actor</span><span class="params">(gevent.Greenlet)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self.inbox = Queue()</div><div class="line">        Greenlet.__init__(self)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">receive</span><span class="params">(self, message)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line">        Define in your subclass.</div><div class="line">        """</div><div class="line">        <span class="keyword">raise</span> <span class="built_in">NotImplemented</span>()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_run</span><span class="params">(self)</span>:</span></div><div class="line">        self.running = <span class="keyword">True</span></div><div class="line"></div><div class="line">        <span class="keyword">while</span> self.running:</div><div class="line">            message = self.inbox.get()</div><div class="line">            self.receive(message)</div></pre></td></tr></table></figure></p>
+<p>下面是一个使用的例子：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> gevent</div><div class="line"><span class="keyword">from</span> gevent.queue <span class="keyword">import</span> Queue</div><div class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> Greenlet</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pinger</span><span class="params">(Actor)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">receive</span><span class="params">(self, message)</span>:</span></div><div class="line">        print(message)</div><div class="line">        pong.inbox.put(<span class="string">'ping'</span>)</div><div class="line">        gevent.sleep(<span class="number">0</span>)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ponger</span><span class="params">(Actor)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">receive</span><span class="params">(self, message)</span>:</span></div><div class="line">        print(message)</div><div class="line">        ping.inbox.put(<span class="string">'pong'</span>)</div><div class="line">        gevent.sleep(<span class="number">0</span>)</div><div class="line"></div><div class="line">ping = Pinger()</div><div class="line">pong = Ponger()</div><div class="line"></div><div class="line">ping.start()</div><div class="line">pong.start()</div><div class="line"></div><div class="line">ping.inbox.put(<span class="string">'start'</span>)</div><div class="line">gevent.joinall([ping, pong])</div></pre></td></tr></table></figure></p>
+<h3 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用"></a>实际应用</h3><ul>
+<li>Gevent ZeroMQ</li>
+<li>简单server</li>
+<li>WSGI Servers</li>
+<li>流式server</li>
+<li>Long Polling</li>
+<li>Websockets</li>
+</ul>
+<h4 id="简单server"><a href="#简单server" class="headerlink" title="简单server"></a>简单server</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># On Unix: Access with ``$ nc 127.0.0.1 5000``</span></div><div class="line"><span class="comment"># On Window: Access with ``$ telnet 127.0.0.1 5000``</span></div><div class="line"></div><div class="line"><span class="keyword">from</span> gevent.server <span class="keyword">import</span> StreamServer</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle</span><span class="params">(socket, address)</span>:</span></div><div class="line">    socket.send(<span class="string">"Hello from a telnet!\n"</span>)</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>):</div><div class="line">        socket.send(str(i) + <span class="string">'\n'</span>)</div><div class="line">    socket.close()</div><div class="line"></div><div class="line">server = StreamServer((<span class="string">'127.0.0.1'</span>, <span class="number">5000</span>), handle)</div><div class="line">server.serve_forever()</div></pre></td></tr></table></figure>
+<h4 id="WSGI-Servers-And-Websockets"><a href="#WSGI-Servers-And-Websockets" class="headerlink" title="WSGI Servers And Websockets"></a>WSGI Servers And Websockets</h4><p>Gevent为HTTP内容服务提供了两种WSGI server。从今以后就称为 wsgi和pywsgi：</p>
+<ul>
+<li>gevent.wsgi.WSGIServer</li>
+<li>gevent.pywsgi.WSGIServer</li>
+</ul>
+<p>glb中使用<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> click</div><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</div><div class="line"><span class="keyword">from</span> gevent.pywsgi <span class="keyword">import</span> WSGIServer</div><div class="line"><span class="keyword">from</span> geventwebsocket.handler <span class="keyword">import</span> WebSocketHandler</div><div class="line"></div><div class="line"><span class="keyword">import</span> v1</div><div class="line"><span class="keyword">from</span> .settings <span class="keyword">import</span> Config</div><div class="line"><span class="keyword">from</span> .sockethandler <span class="keyword">import</span> handle_websocket</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_app</span><span class="params">(config=None)</span>:</span></div><div class="line">    app = Flask(__name__, static_folder=<span class="string">'static'</span>)</div><div class="line">    <span class="keyword">if</span> config:</div><div class="line">        app.config.update(config)</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        app.config.from_object(Config)</div><div class="line"></div><div class="line">    app.register_blueprint(</div><div class="line">        v1.bp,</div><div class="line">        url_prefix=<span class="string">'/v1'</span>)</div><div class="line">    <span class="keyword">return</span> app</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">wsgi_app</span><span class="params">(environ, start_response)</span>:</span></div><div class="line">    path = environ[<span class="string">'PATH_INFO'</span>]</div><div class="line">    <span class="keyword">if</span> path == <span class="string">'/websocket'</span>:</div><div class="line">        handle_websocket(environ[<span class="string">'wsgi.websocket'</span>])</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="keyword">return</span> create_app()(environ, start_response)</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@click.command()</span></div><div class="line"><span class="meta">@click.option('-h', '--host_port', type=(unicode, int),</span></div><div class="line">    default=(<span class="string">'0.0.0.0'</span>, <span class="number">5000</span>), help=<span class="string">'Host and port of server.'</span>)</div><div class="line"><span class="meta">@click.option('-r', '--redis', type=(unicode, int, int),</span></div><div class="line">    default=(<span class="string">'127.0.0.1'</span>, <span class="number">6379</span>, <span class="number">0</span>),</div><div class="line">    help=<span class="string">'Redis url of server.'</span>)</div><div class="line"><span class="meta">@click.option('-p', '--port_range', type=(int, int),</span></div><div class="line">    default=(<span class="number">50000</span>, <span class="number">61000</span>),</div><div class="line">    help=<span class="string">'Port range to be assigned.'</span>)</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">manage</span><span class="params">(host_port, redis=None, port_range=None)</span>:</span></div><div class="line">    Config.REDIS_URL = <span class="string">'redis://%s:%s/%s'</span> % redis</div><div class="line">    Config.PORT_RANGE = port_range</div><div class="line">    http_server = WSGIServer(host_port,</div><div class="line">                             wsgi_app, handler_class=WebSocketHandler)</div><div class="line">    <span class="keyword">print</span> <span class="string">'----GLB Server run at %s:%s-----'</span> % host_port</div><div class="line">    <span class="keyword">print</span> <span class="string">'----Redis Server run at %s:%s:%s-----'</span> % redis</div><div class="line">    http_server.serve_forever()</div></pre></td></tr></table></figure></p>
+<h2 id="缺陷"><a href="#缺陷" class="headerlink" title="缺陷"></a>缺陷</h2><p>和其他异步I/O框架一样,gevent也有一些缺陷:</p>
+<ul>
+<li>阻塞(真正的阻塞,在内核级别)在程序中的某个地方停止了所有的东西.这很像C代码中monkey patch没有生效</li>
+<li>保持CPU处于繁忙状态.greenlet不是抢占式的,这可能导致其他greenlet不会被调度.</li>
+<li>在greenlet之间存在死锁的可能.</li>
+</ul>
+<p>一个gevent回避的缺陷是,你几乎不会碰到一个和异步无关的Python库–它将阻塞你的应用程序,因为纯Python库使用的是monkey patch的stdlib.</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/Gevent/" rel="tag"># Gevent</a>
+          
+            <a href="/tags/协程/" rel="tag"># 协程</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/10/26/unmount-not-found/" rel="next" title="Ubuntu--&quot;unmount:command not found&quot;的解决方法">
+                <i class="fa fa-chevron-left"></i> Ubuntu--&quot;unmount:command not found&quot;的解决方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/22/create-kubernetes-cluster/" rel="prev" title="搭建Kubernetes1.4集群">
+                搭建Kubernetes1.4集群 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Lain" />
+          <p class="site-author-name" itemprop="name">Lain</p>
+          <p class="site-description motion-element" itemprop="description">藏剑于身 待时而动</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/softlns" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+        
+        <div class="feed-link motion-element">
+        <iframe style="background:transparent !important" scrolling="no" frameborder="0" allowtransparency="true" width="220" height="220" src="//rf.revolvermaps.com/w/6/a/a.php?i=5ayy6umx8je&amp;m=7&amp;s=270&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80"></iframe>
+        </div>
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前述"><span class="nav-number">1.</span> <span class="nav-text">前述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#进程-线程-协程-异步"><span class="nav-number">1.1.</span> <span class="nav-text">进程 线程 协程 异步</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#进程"><span class="nav-number">1.1.1.</span> <span class="nav-text">进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程"><span class="nav-number">1.1.2.</span> <span class="nav-text">线程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#协程"><span class="nav-number">1.1.3.</span> <span class="nav-text">协程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.1.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聊聊协程"><span class="nav-number">1.2.</span> <span class="nav-text">聊聊协程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gevent"><span class="nav-number">2.</span> <span class="nav-text">Gevent</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#介绍"><span class="nav-number">2.1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装和依赖"><span class="nav-number">2.2.</span> <span class="nav-text">安装和依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核心部分"><span class="nav-number">2.3.</span> <span class="nav-text">核心部分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#同步和异步执行"><span class="nav-number">2.3.1.</span> <span class="nav-text">同步和异步执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确定性"><span class="nav-number">2.3.2.</span> <span class="nav-text">确定性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建Greenlets"><span class="nav-number">2.3.3.</span> <span class="nav-text">创建Greenlets</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Greenlet状态"><span class="nav-number">2.3.4.</span> <span class="nav-text">Greenlet状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#程序停止"><span class="nav-number">2.3.5.</span> <span class="nav-text">程序停止</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#超时"><span class="nav-number">2.3.6.</span> <span class="nav-text">超时</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#猴子补丁-Monkey-patching"><span class="nav-number">2.3.7.</span> <span class="nav-text">猴子补丁(Monkey patching)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据结构"><span class="nav-number">2.4.</span> <span class="nav-text">数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#事件"><span class="nav-number">2.4.1.</span> <span class="nav-text">事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#队列"><span class="nav-number">2.4.2.</span> <span class="nav-text">队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#组和池"><span class="nav-number">2.4.3.</span> <span class="nav-text">组和池</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#锁和信号量"><span class="nav-number">2.4.4.</span> <span class="nav-text">锁和信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程局部变量"><span class="nav-number">2.4.5.</span> <span class="nav-text">线程局部变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#子进程"><span class="nav-number">2.4.6.</span> <span class="nav-text">子进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Actors"><span class="nav-number">2.4.7.</span> <span class="nav-text">Actors</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实际应用"><span class="nav-number">2.5.</span> <span class="nav-text">实际应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#简单server"><span class="nav-number">2.5.1.</span> <span class="nav-text">简单server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WSGI-Servers-And-Websockets"><span class="nav-number">2.5.2.</span> <span class="nav-text">WSGI Servers And Websockets</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺陷"><span class="nav-number">3.</span> <span class="nav-text">缺陷</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lain</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'https://softlns.github.io';
+      var disqus_identifier = '2015/11/28/python-gevent/';
+
+      var disqus_title = "Gevent简明教程";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("xUeT8yKduFzhHlntroA20LXf-gzGzoHsz", "eSByTxAGNpd3WWsbNMoTdMnR");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/particle.js"></script>
+  
+    <!-- custom analytics part create by lain -->
+<script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+<script>AV.initialize("xUeT8yKduFzhHlntroA20LXf-gzGzoHsz", "eSByTxAGNpd3WWsbNMoTdMnR");</script>
+<script>
+function showTime(Counter) {
+	var query = new AV.Query(Counter);
+	$(".leancloud_visitors").each(function() {
+		var url = $(this).attr("id").trim();
+		query.equalTo("url", url);
+		query.find({
+			success: function(results) {
+				if (results.length == 0) {
+					var content = $(document.getElementById(url)).text() + ': 0';
+					$(document.getElementById(url)).text(content);
+					return;
+				}
+				for (var i = 0; i < results.length; i++) {
+					var object = results[i];
+					var content = $(document.getElementById(url)).text() + ': ' + object.get('time');
+					$(document.getElementById(url)).text(content);
+				}
+			},
+			error: function(object, error) {
+				console.log("Error: " + error.code + " " + error.message);
+			}
+		});
+	});
+}
+function addCount(Counter) {
+	var Counter = AV.Object.extend("Counter");
+	url = $(".leancloud_visitors").attr('id').trim();
+	title = $(".leancloud_visitors").attr('data-flag-title').trim();
+	var query = new AV.Query(Counter);
+	query.equalTo("url", url);
+	query.find({
+		success: function(results) {
+			if (results.length > 0) {
+				var counter = results[0];
+				counter.fetchWhenSave(true);
+				counter.increment("time");
+				counter.save(null, {
+					success: function(counter) {
+						var content = $(document.getElementById(url)).text() + ': ' + counter.get('time');
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(counter, error) {
+						console.log('Failed to save Visitor num, with error message: ' + error.message);
+					}
+				});
+			} else {
+				var newcounter = new Counter();
+				newcounter.set("title", title);
+				newcounter.set("url", url);
+				newcounter.set("time", 1);
+				newcounter.save(null, {
+					success: function(newcounter) {
+					    console.log("newcounter.get('time')="+newcounter.get('time'));
+						var content = $(document.getElementById(url)).text() + ': ' + newcounter.get('time');
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(newcounter, error) {
+						console.log('Failed to create');
+					}
+				});
+			}
+		},
+		error: function(error) {
+			console.log('Error:' + error.code + " " + error.message);
+		}
+	});
+}
+$(function() {
+	var Counter = AV.Object.extend("Counter");
+	if ($('.leancloud_visitors').length == 1) {
+		addCount(Counter);
+	} else if ($('.post-title-link').length > 1) {
+		showTime(Counter);
+	}
+});
+</script>
+
+  
+</body>
+</html>

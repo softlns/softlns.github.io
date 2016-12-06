@@ -1,0 +1,1565 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="golang,goroutine,channel," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Lain's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Go中并发程序依靠是：goroutine和channel
+
+什么是goroutine？Goroutine，被普遍认为是协程的go语言实现。《Go语言编程》中说goroutine是轻量级线程(即协程coroutine, 原书90页). 在第九章进阶话题中, 作者又一次提到, “从根本上来说, goroutine就是一种go语言版本的协程(coroutine)” (原书204页). 但作者Rob P">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go语言--并发篇">
+<meta property="og:url" content="https://softlns.github.io/2014/09/13/go-goroutine/index.html">
+<meta property="og:site_name" content="Lain's Blog">
+<meta property="og:description" content="Go中并发程序依靠是：goroutine和channel
+
+什么是goroutine？Goroutine，被普遍认为是协程的go语言实现。《Go语言编程》中说goroutine是轻量级线程(即协程coroutine, 原书90页). 在第九章进阶话题中, 作者又一次提到, “从根本上来说, goroutine就是一种go语言版本的协程(coroutine)” (原书204页). 但作者Rob P">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/hello.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/timers.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/pingpong.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/pingpong3.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/pingpong100.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/fanin.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/workers.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/workers2.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/servers.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/servers2.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/servers3.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/primesieve.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/parallelism1.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/parallelism2.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/primesieve.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/workers2.gif">
+<meta property="og:image" content="https://divan.github.io/demos/gifs/pingpong100.gif">
+<meta property="og:updated_time" content="2016-12-05T09:02:10.278Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go语言--并发篇">
+<meta name="twitter:description" content="Go中并发程序依靠是：goroutine和channel
+
+什么是goroutine？Goroutine，被普遍认为是协程的go语言实现。《Go语言编程》中说goroutine是轻量级线程(即协程coroutine, 原书90页). 在第九章进阶话题中, 作者又一次提到, “从根本上来说, goroutine就是一种go语言版本的协程(coroutine)” (原书204页). 但作者Rob P">
+<meta name="twitter:image" content="https://divan.github.io/demos/gifs/hello.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '6342352355521988000',
+      author: 'Lain'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://softlns.github.io/2014/09/13/go-goroutine/"/>
+
+
+
+
+
+  <title> Go语言--并发篇 | Lain's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Lain's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">藏剑于身 待时而动</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-board">
+          <a href="/board" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-commenting"></i> <br />
+            
+            留言板
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://softlns.github.io/2014/09/13/go-goroutine/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Lain">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Lain's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Lain's Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Go语言--并发篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2014-09-13T16:54:45+08:00">
+                2014-09-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2014/09/13/go-goroutine/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/09/13/go-goroutine/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+            <span id="/2014/09/13/go-goroutine/" class="leancloud_visitors"  data-flag-title="Go语言--并发篇">
+              &nbsp; | &nbsp; 阅读次数
+            </span>
+          
+
+          
+          
+             <span id="/2014/09/13/go-goroutine/" class="leancloud_visitors" data-flag-title="Go语言--并发篇">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p><b>Go中并发程序依靠是：goroutine和channel</b></p>
+</blockquote>
+<h3 id="什么是goroutine？"><a href="#什么是goroutine？" class="headerlink" title="什么是goroutine？"></a>什么是goroutine？</h3><p>Goroutine，被普遍认为是协程的go语言实现。《Go语言编程》中说goroutine是轻量级线程(即协程coroutine, 原书90页). 在第九章进阶话题中, 作者又一次提到, “从根本上来说, goroutine就是一种go语言版本的协程(coroutine)” (原书204页). 但作者Rob Pike并不这么说。</p>
+<p><b>“一个Goroutine是一个与其他goroutines并发运行在同一地址空间的Go函数或方法。一个运行的程序由一个或更多个goroutine组成。它与线程、协程、进程等不同。它是一个goroutine。”</b></p>
+<a id="more"></a>
+<h4 id="1-goroutine-vs-协程"><a href="#1-goroutine-vs-协程" class="headerlink" title="1. goroutine vs 协程"></a>1. goroutine vs 协程</h4><p>是go语言原生支持的，相对于一般由库实现协程的方式，goroutine更加强大，它的调度一定程度上是由go运行时（runtime）管理。其好处之一是，当某goroutine发生阻塞时（例如同步IO操作等），会自动出让CPU给其它goroutine。</p>
+<h4 id="2-goroutine-vs-线程"><a href="#2-goroutine-vs-线程" class="headerlink" title="2. goroutine vs 线程"></a>2. goroutine vs 线程</h4><p>一个goroutine并不相当于一个线程，goroutine的出现正是为了替代原来的线程概念成为最小的调度范围，一旦运行goroutine时，先去当前线程查找，如果线程阻塞了，则被分配到空闲的线程，如果没有空闲的线程，那么就会新建一个线程。注意的是，当goroutine执行完毕后，线程不会回收退出，而是成为了空闲的线程。</p>
+<h3 id="goroutine的使用"><a href="#goroutine的使用" class="headerlink" title="goroutine的使用"></a>goroutine的使用</h3><pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func ready(w string, sec int64) {
+    time.Sleep(sec * 1e9)
+    fmt.Println(w, &quot;is ready!&quot;)
+}
+
+func main() {
+    go ready(&quot;Tee&quot;, 2)
+    go ready(&quot;Coffee&quot;, 1)
+    fmt.Println(&quot;I&apos;m waiting&quot;)
+    time.Sleep(5 * 1e9)
+}
+</code></pre><p>主线程为什么要sleep？</p>
+<h3 id="channel的使用"><a href="#channel的使用" class="headerlink" title="channel的使用"></a>channel的使用</h3><p>channel是线程之间通信的管道</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+var c chan int
+
+func ready(w string, sec int) {
+    time.Sleep(int64(sec) * 1e9)
+    fmt.Println(w, &quot;is ready!&quot;)
+    c &lt;- 1
+}
+
+func main() {
+    c = make(chan int)
+    go ready(&quot;Tee&quot;, 2)
+    go ready(&quot;Coffee&quot;, 1)
+    fmt.Println(&quot;I&apos;m waiting, but not too long&quot;)
+    &lt;-c
+    &lt;-c
+</code></pre><h4 id="channel-进一步理解"><a href="#channel-进一步理解" class="headerlink" title="channel 进一步理解"></a>channel 进一步理解</h4><p>channel分为两种：有buffer的，没有buffer的  默认的是没有buffer的</p>
+<p>c1 := make(chan int)<br>c2 := make(chan int, 0)<br>c3 := make(chan int, 100)</p>
+<p>有缓冲的channel，注意先“放”后“取”<br>没有缓冲的channel，注意先“取”后“放”</p>
+<h3 id="图解并行编程"><a href="#图解并行编程" class="headerlink" title="图解并行编程"></a>图解并行编程</h3><h4 id="1-单个channel，单个goroutine-一个写，一个读"><a href="#1-单个channel，单个goroutine-一个写，一个读" class="headerlink" title="1. 单个channel，单个goroutine,  一个写，一个读"></a>1. 单个channel，单个goroutine,  一个写，一个读</h4><pre><code>package main
+
+func main() {
+    ch := make(chan int)
+
+    go func() {
+        ch &lt;- 42
+    }()
+
+    &lt;-ch
+} 
+</code></pre><p><img src="https://divan.github.io/demos/gifs/hello.gif" alt="hello"></p>
+<h4 id="2-加入定时器的实现"><a href="#2-加入定时器的实现" class="headerlink" title="2. 加入定时器的实现"></a>2. 加入定时器的实现</h4><pre><code>package main
+
+import &quot;time&quot;
+
+func timer(d time.Duration) &lt;-chan int {
+    c := make(chan int)
+    go func() {
+        time.Sleep(d)
+        c &lt;- 1 
+    }()
+    return c 
+}
+
+func main() {
+    for i :=0; i &lt; 24; i++ {
+        c := timer(i * time.Second)
+        &lt;-c
+    }
+}
+</code></pre><p><img src="https://divan.github.io/demos/gifs/timers.gif" alt="timers"></p>
+<h4 id="3-乒乓模式"><a href="#3-乒乓模式" class="headerlink" title="3.乒乓模式"></a>3.乒乓模式</h4><pre><code>import main
+
+import &quot;time&quot;
+
+func main() {
+    var Ball int
+    table := make(chan int)
+    go player(table)
+    go player(table)
+
+    table &lt;- Ball
+    time.Sleep(1 * time.Second)
+    &lt;-table
+}
+
+func player(table chan int) {
+    for {
+        ball := &lt;-table
+        ball++
+        time.Sleep(100 * time.Millisecond)
+        table &lt;- ball
+    }
+}
+</code></pre><p><img src="https://divan.github.io/demos/gifs/pingpong.gif" alt="pingpong"></p>
+<p>如果有3个人</p>
+<pre><code>go player(table)
+go player(table)
+go player(table)
+</code></pre><p><img src="https://divan.github.io/demos/gifs/pingpong3.gif" alt="pingpong3"></p>
+<p>如果有100个人</p>
+<pre><code>for i := 0: i&lt; 100; i++ {
+    go player(table)
+}
+</code></pre><p><img src="https://divan.github.io/demos/gifs/pingpong100.gif" alt="pingpong100"></p>
+<p>goroutines从某个特定的channel接收数据遵循<a href="https://github.com/golang/go/blob/master/src/runtime/chan.go#L34" target="_blank" rel="external">FIFO order</a></p>
+<h4 id="4-Fan-In（扇入）"><a href="#4-Fan-In（扇入）" class="headerlink" title="4.Fan-In（扇入）"></a>4.Fan-In（扇入）</h4><p>并发世界的一个流行的编程模式————扇入模式。（相反是扇出模式）<br>扇入是一个函数读取多个输入和多路复用到单通道。</p>
+<p>note：在软件工程中，模块的扇入是指有多少个上级模块调用它。扇入越大，表示该模块被更多的上级模块共享。这当然是我们所希望的。但是不能为了获得高扇入而不惜代价，例如把彼此无关的功能凑在一起构成一个模块，虽然扇入数高了，但这样的模块内聚程度必然低。这是我们应避免的。</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func producer(ch chan int, d time.Duration) {
+    var i int
+    for {
+        ch &lt;- i
+        i++
+        time.Sleep(d)
+    }
+}
+
+func reader(out chan int) {
+    for x := range out {
+        fmt.Println(x)
+    }
+}
+
+func main() {
+    ch := make(chan int)
+    out := make(chan int)
+    go producer(ch, 100*time.Millisecond)
+    go producer(ch, 100*time.Millisecond)
+    go reader(out)
+    for i := range ch {
+        out &lt;- i
+    } 
+}
+</code></pre><p><img src="https://divan.github.io/demos/gifs/fanin.gif" alt="fanin"></p>
+<h4 id="5-Workers模式-fan-out-扇出"><a href="#5-Workers模式-fan-out-扇出" class="headerlink" title="5. Workers模式(fan-out) 扇出"></a>5. Workers模式(fan-out) 扇出</h4><p>与扇入相反，多个函数从单一通道读取任务，分发任务到各个cpu核心上。</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func worker(taskCh &lt;-chan int, wg *sync.WaitGroup) {
+    defer wg.Done()
+    for {
+        task, ok := &lt;-taskCh
+        if !ok {
+            return 
+        }
+        d := time.Duration(task) * time.Millisecond
+        time.Sleep(d)
+        fmt.Println(&quot;processing task&quot;, task)
+    }
+}
+
+func pool(wg *sync.WaitGroup, workers, tasks int) {
+    tasksCh := make(chan int)
+
+    for i := 0; i &lt; workers; i++ {
+        go worker(taskCh, wg)
+    }
+
+    for i := 0; i &lt; tasks; i++ {
+        taskCh &lt;- i
+    }
+
+    close(tasksCh)
+}
+
+func main() {
+    var wg sync.WaitGroup
+    wg.add(36)
+    go poll(&amp;wg, 36, 50)
+    wg.Wait()
+}
+</code></pre><p><img src="https://divan.github.io/demos/gifs/workers.gif" alt="workers"></p>
+<p>更复杂的例子：</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+const (
+    WORKERS     = 5
+    SUBWORKERS  = 3
+    TASKS       = 20
+    SUBTASKS    = 10
+)
+
+func subworker(subtasks chan int) {
+    for {
+        task, ok := &lt;-subtasks
+        if !ok {
+            return
+        }
+        time.Sleep(time.Duration(task) * time.Millisecond)
+        fmt.Println(task)
+    }
+}
+
+func worker(tasks &lt;-chan int, wg *sync.WaitGroup) {
+    defer wg.Done()
+    for {
+        task, ok := &lt;-tasks
+        if !ok {
+            return
+        }
+
+        subtasks := make(chan int)
+        for i := 0; i &lt; SUBWORKERS; i++ {
+            go subworker(subtasks)
+        }
+        for i := 0; i &lt; SUBTASKS; i++ {
+            task1 := task * i
+            subtasks &lt;- task1
+        }
+        close(subtasks)
+    }
+}
+
+func main() {
+    var wg sync.WaitGroup
+    wg.Add(WORKERS)
+    tasks := make(chan int)
+
+    for i := 0; i &lt; WORKERS; i++ {
+        go worker(tasks, &amp;wg)
+    }
+
+    for i := 0; i &lt; TASKS; i++ {
+        tasks &lt;- i
+    }
+
+    close(tasks)
+    wg.Wait()
+}
+</code></pre><p><img src="https://divan.github.io/demos/gifs/workers2.gif" alt="enter description here"></p>
+<h4 id="servers模式-和扇出相类似"><a href="#servers模式-和扇出相类似" class="headerlink" title="servers模式 (和扇出相类似)"></a>servers模式 (和扇出相类似)</h4><pre><code>package main
+
+import &quot;net&quot;
+
+func handler(c net.Conn) {
+    c.Write([] byte(&quot;ok&quot;))
+    c.Close()
+}
+
+func main() {
+    l, err := net.Listen(&quot;tcp&quot;, &quot;:5000&quot;)
+    if err != nil {
+        panic(err)
+    }
+    for {
+        c, err := l.Accept()
+        if err != nil {
+            continue
+        }
+        go handler(c)
+    }
+}
+</code></pre><p><img src="https://divan.github.io/demos/gifs/servers.gif" alt="servers"></p>
+<p><a href="https://www.youtube.com/watch?v=rFejpH_tAHM" target="_blank" rel="external">Simplicity is complicated</a></p>
+<h4 id="server模式2（logger）"><a href="#server模式2（logger）" class="headerlink" title="server模式2（logger）"></a>server模式2（logger）</h4><pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;net&quot;
+    &quot;time&quot;
+)
+
+func handler(c net.Conn, ch chan string) {
+    ch &lt;- c.RemoteAddr().String()
+    c.Write([]byte(&quot;ok&quot;))
+    c.Close()
+}
+
+func logger(ch chan string) {
+    for {
+        fmt.Println(&lt;-ch)
+    }
+}
+
+func server(l net.Listener, ch chan string) {
+    for {
+        c, err := l.Accept()
+        if err != nil {
+            continue
+        }
+        go handler(c, ch)
+    }
+}
+
+func main() {
+    l, err := net.Listen(&quot;tcp&quot;, &quot;:5000&quot;)
+    if err != nil {
+        paic(err)
+    }
+    ch := make(chan string)
+    go logger(ch)
+    go server(l, ch)
+    time.Sleep(10 * time.Second)
+}
+</code></pre><p><img src="https://divan.github.io/demos/gifs/servers2.gif" alt="enter description here"></p>
+<h4 id="Server-Worker-模式"><a href="#Server-Worker-模式" class="headerlink" title="Server + Worker 模式"></a>Server + Worker 模式</h4><pre><code>package main
+
+import (
+    &quot;net&quot;
+    &quot;time&quot;
+)
+
+func handler(c net.Conn, ch chan string) {
+    addr := c.RemoteAddr().String()
+    ch &lt;- addr
+    time.Sleep(100 * time.Millisecond)
+    c.Write([]byte(&quot;ok&quot;))
+    c.Close()
+}
+
+func logger(wch chan int, results chan int) {
+    for {
+        data := &lt;-wch
+        data++
+        result &lt;- data
+    }
+}
+
+func parse(results chan int) {
+    for {
+        &lt;-results
+    }
+}
+
+func pool(ch chan string, n int) {
+    wch := make(chan int)
+    results := make(chan int)
+    for i := 0; i &lt; n; i++ {
+        go logger(wch, results)
+    }
+    go parse(results)
+    for {
+        addr := &lt;-ch 
+        l := len(addr)
+        wch &lt;- l
+    }
+}
+
+func server(l net.Listener, ch chan string) {
+    for {
+        c, err := l.Accept()
+        if err != nil {
+            continue
+        }
+        go handler(c, ch)
+    }
+}
+
+func main() {
+    l, err := net.Listen(&quot;tcp&quot;, &quot;:5000&quot;)
+    if err != nil {
+        panic(err)
+    }
+    ch := make(chan string)
+    go pool(ch, 4)
+    go server(l, ch)
+    time.Sleep(10 * time.Second)
+}
+</code></pre><p><img src="https://divan.github.io/demos/gifs/servers3.gif" alt="servers3"></p>
+<h3 id="Concurrent-Prime-Sieve-素数帅选器"><a href="#Concurrent-Prime-Sieve-素数帅选器" class="headerlink" title="Concurrent Prime Sieve(素数帅选器)"></a>Concurrent Prime Sieve(素数帅选器)</h3><pre><code>package main
+
+import &quot;fmt&quot;
+
+func Generate(ch chan&lt;- int) {
+    for i := 2; ; i++ {
+        ch &lt;- i
+    }
+}
+
+func Filter(in &lt;-chan int, out chan&lt;- int, prime int) {
+    for {
+        i := &lt;-in
+        if i % prime != 0 {
+            out &lt;- i
+        }
+    }
+}
+
+func main() {
+    ch := make(chan int)
+    go Generate(ch)
+    for i := 0; i &lt; 10; i++ {
+        prime := &lt;-ch
+        fmt.Println(prime)
+        ch1 := make(chan int)
+        go Filter(ch, ch1, prime)
+        ch = ch1
+    }
+}
+</code></pre><p><img src="https://divan.github.io/demos/gifs/primesieve.gif" alt="prime sieve"></p>
+<h3 id="Parallelism-is-not-Concurrency"><a href="#Parallelism-is-not-Concurrency" class="headerlink" title="Parallelism is not Concurrency"></a>Parallelism is not Concurrency</h3><p>简而言之:<br><b></b></p>
+<blockquote>
+<p>Parallelism is simply running things in parallel.<br>Concurrency is a way to structure your program.<br></p>
+</blockquote>
+<p>一图胜千言</p>
+<h4 id="parallelism-并行"><a href="#parallelism-并行" class="headerlink" title="parallelism 并行"></a>parallelism 并行</h4><p><img src="https://divan.github.io/demos/gifs/parallelism1.gif" alt="parallelism1"></p>
+<p><img src="https://divan.github.io/demos/gifs/parallelism2.gif" alt="parallelism2"></p>
+<h4 id="concurrency-并发"><a href="#concurrency-并发" class="headerlink" title="concurrency 并发"></a>concurrency 并发</h4><p><img src="https://divan.github.io/demos/gifs/primesieve.gif" alt="concurrency1"></p>
+<p><img src="https://divan.github.io/demos/gifs/workers2.gif" alt="concurrency2"></p>
+<p><img src="https://divan.github.io/demos/gifs/pingpong100.gif" alt="concurrency3"></p>
+<p>Rob Pike-<a href="https://www.youtube.com/watch?v=cN_DpYBzKso" target="_blank" rel="external">Concurrency Is Not Parallelism</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/golang/" rel="tag"># golang</a>
+          
+            <a href="/tags/goroutine/" rel="tag"># goroutine</a>
+          
+            <a href="/tags/channel/" rel="tag"># channel</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/10/26/unmount-not-found/" rel="prev" title="Ubuntu--&quot;unmount:command not found&quot;的解决方法">
+                Ubuntu--&quot;unmount:command not found&quot;的解决方法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Lain" />
+          <p class="site-author-name" itemprop="name">Lain</p>
+          <p class="site-description motion-element" itemprop="description">藏剑于身 待时而动</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/softlns" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+        
+        <div class="feed-link motion-element">
+        <iframe style="background:transparent !important" scrolling="no" frameborder="0" allowtransparency="true" width="220" height="220" src="//rf.revolvermaps.com/w/6/a/a.php?i=5ayy6umx8je&amp;m=7&amp;s=270&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80"></iframe>
+        </div>
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是goroutine？"><span class="nav-number">1.</span> <span class="nav-text">什么是goroutine？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-goroutine-vs-协程"><span class="nav-number">1.1.</span> <span class="nav-text">1. goroutine vs 协程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-goroutine-vs-线程"><span class="nav-number">1.2.</span> <span class="nav-text">2. goroutine vs 线程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#goroutine的使用"><span class="nav-number">2.</span> <span class="nav-text">goroutine的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#channel的使用"><span class="nav-number">3.</span> <span class="nav-text">channel的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#channel-进一步理解"><span class="nav-number">3.1.</span> <span class="nav-text">channel 进一步理解</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图解并行编程"><span class="nav-number">4.</span> <span class="nav-text">图解并行编程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-单个channel，单个goroutine-一个写，一个读"><span class="nav-number">4.1.</span> <span class="nav-text">1. 单个channel，单个goroutine,  一个写，一个读</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-加入定时器的实现"><span class="nav-number">4.2.</span> <span class="nav-text">2. 加入定时器的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-乒乓模式"><span class="nav-number">4.3.</span> <span class="nav-text">3.乒乓模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Fan-In（扇入）"><span class="nav-number">4.4.</span> <span class="nav-text">4.Fan-In（扇入）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Workers模式-fan-out-扇出"><span class="nav-number">4.5.</span> <span class="nav-text">5. Workers模式(fan-out) 扇出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#servers模式-和扇出相类似"><span class="nav-number">4.6.</span> <span class="nav-text">servers模式 (和扇出相类似)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#server模式2（logger）"><span class="nav-number">4.7.</span> <span class="nav-text">server模式2（logger）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Server-Worker-模式"><span class="nav-number">4.8.</span> <span class="nav-text">Server + Worker 模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Concurrent-Prime-Sieve-素数帅选器"><span class="nav-number">5.</span> <span class="nav-text">Concurrent Prime Sieve(素数帅选器)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Parallelism-is-not-Concurrency"><span class="nav-number">6.</span> <span class="nav-text">Parallelism is not Concurrency</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#parallelism-并行"><span class="nav-number">6.1.</span> <span class="nav-text">parallelism 并行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#concurrency-并发"><span class="nav-number">6.2.</span> <span class="nav-text">concurrency 并发</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lain</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'https://softlns.github.io';
+      var disqus_identifier = '2014/09/13/go-goroutine/';
+
+      var disqus_title = "Go语言--并发篇";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("xUeT8yKduFzhHlntroA20LXf-gzGzoHsz", "eSByTxAGNpd3WWsbNMoTdMnR");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/particle.js"></script>
+  
+    <!-- custom analytics part create by lain -->
+<script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+<script>AV.initialize("xUeT8yKduFzhHlntroA20LXf-gzGzoHsz", "eSByTxAGNpd3WWsbNMoTdMnR");</script>
+<script>
+function showTime(Counter) {
+	var query = new AV.Query(Counter);
+	$(".leancloud_visitors").each(function() {
+		var url = $(this).attr("id").trim();
+		query.equalTo("url", url);
+		query.find({
+			success: function(results) {
+				if (results.length == 0) {
+					var content = $(document.getElementById(url)).text() + ': 0';
+					$(document.getElementById(url)).text(content);
+					return;
+				}
+				for (var i = 0; i < results.length; i++) {
+					var object = results[i];
+					var content = $(document.getElementById(url)).text() + ': ' + object.get('time');
+					$(document.getElementById(url)).text(content);
+				}
+			},
+			error: function(object, error) {
+				console.log("Error: " + error.code + " " + error.message);
+			}
+		});
+	});
+}
+function addCount(Counter) {
+	var Counter = AV.Object.extend("Counter");
+	url = $(".leancloud_visitors").attr('id').trim();
+	title = $(".leancloud_visitors").attr('data-flag-title').trim();
+	var query = new AV.Query(Counter);
+	query.equalTo("url", url);
+	query.find({
+		success: function(results) {
+			if (results.length > 0) {
+				var counter = results[0];
+				counter.fetchWhenSave(true);
+				counter.increment("time");
+				counter.save(null, {
+					success: function(counter) {
+						var content = $(document.getElementById(url)).text() + ': ' + counter.get('time');
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(counter, error) {
+						console.log('Failed to save Visitor num, with error message: ' + error.message);
+					}
+				});
+			} else {
+				var newcounter = new Counter();
+				newcounter.set("title", title);
+				newcounter.set("url", url);
+				newcounter.set("time", 1);
+				newcounter.save(null, {
+					success: function(newcounter) {
+					    console.log("newcounter.get('time')="+newcounter.get('time'));
+						var content = $(document.getElementById(url)).text() + ': ' + newcounter.get('time');
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(newcounter, error) {
+						console.log('Failed to create');
+					}
+				});
+			}
+		},
+		error: function(error) {
+			console.log('Error:' + error.code + " " + error.message);
+		}
+	});
+}
+$(function() {
+	var Counter = AV.Object.extend("Counter");
+	if ($('.leancloud_visitors').length == 1) {
+		addCount(Counter);
+	} else if ($('.post-title-link').length > 1) {
+		showTime(Counter);
+	}
+});
+</script>
+
+  
+</body>
+</html>

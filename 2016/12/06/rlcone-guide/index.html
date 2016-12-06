@@ -1,0 +1,1202 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="KS3,Rclone,S3,共享存储," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Lain's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="概述Rclone是一款的命令行工具，支持在不同对象存储、网盘间同步、上传、下载数据。
+支持的主流对象存储：
+Google DriveAmazon S3Openstack Swift / Rackspace cloud files / Memset MemstoreDropboxGoogle Cloud StorageAmazon DriveMicrosoft One DriveHubicBackb">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rlcone使用指南">
+<meta property="og:url" content="https://softlns.github.io/2016/12/06/rlcone-guide/index.html">
+<meta property="og:site_name" content="Lain's Blog">
+<meta property="og:description" content="概述Rclone是一款的命令行工具，支持在不同对象存储、网盘间同步、上传、下载数据。
+支持的主流对象存储：
+Google DriveAmazon S3Openstack Swift / Rackspace cloud files / Memset MemstoreDropboxGoogle Cloud StorageAmazon DriveMicrosoft One DriveHubicBackb">
+<meta property="og:updated_time" content="2016-12-06T03:19:49.695Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rlcone使用指南">
+<meta name="twitter:description" content="概述Rclone是一款的命令行工具，支持在不同对象存储、网盘间同步、上传、下载数据。
+支持的主流对象存储：
+Google DriveAmazon S3Openstack Swift / Rackspace cloud files / Memset MemstoreDropboxGoogle Cloud StorageAmazon DriveMicrosoft One DriveHubicBackb">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '6342352355521988000',
+      author: 'Lain'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://softlns.github.io/2016/12/06/rlcone-guide/"/>
+
+
+
+
+
+  <title> Rlcone使用指南 | Lain's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Lain's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">藏剑于身 待时而动</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-board">
+          <a href="/board" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-commenting"></i> <br />
+            
+            留言板
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://softlns.github.io/2016/12/06/rlcone-guide/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Lain">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Lain's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Lain's Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Rlcone使用指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-06T11:14:40+08:00">
+                2016-12-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2016/12/06/rlcone-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/06/rlcone-guide/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+            <span id="/2016/12/06/rlcone-guide/" class="leancloud_visitors"  data-flag-title="Rlcone使用指南">
+              &nbsp; | &nbsp; 阅读次数
+            </span>
+          
+
+          
+          
+             <span id="/2016/12/06/rlcone-guide/" class="leancloud_visitors" data-flag-title="Rlcone使用指南">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Rclone是一款的命令行工具，支持在不同对象存储、网盘间同步、上传、下载数据。</p>
+<p>支持的主流对象存储：</p>
+<p>Google Drive<br>Amazon S3<br>Openstack Swift / Rackspace cloud files / Memset Memstore<br>Dropbox<br>Google Cloud Storage<br>Amazon Drive<br>Microsoft One Drive<br>Hubic<br>Backblaze B2<br>Yandex Disk<br>The local filesystem<br><a id="more"></a></p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h3 id="Linux下安装"><a href="#Linux下安装" class="headerlink" title="Linux下安装"></a>Linux下安装</h3><h4 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">curl -O http://downloads.rclone.org/rclone-current-linux-amd64.zip</div><div class="line">unzip rclone-current-linux-amd64.zip</div><div class="line"><span class="built_in">cd</span> rclone-*-linux-amd64</div></pre></td></tr></table></figure>
+<h4 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo cp rclone /usr/sbin/</div><div class="line">sudo chown root:root /usr/sbin/rclone</div><div class="line">sudo chmod 755 /usr/sbin/rclone</div></pre></td></tr></table></figure>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone</div></pre></td></tr></table></figure>
+<h3 id="MacOS下安装"><a href="#MacOS下安装" class="headerlink" title="MacOS下安装"></a>MacOS下安装</h3><h4 id="下载安装包-1"><a href="#下载安装包-1" class="headerlink" title="下载安装包"></a>下载安装包</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> &amp;&amp; curl -O http://downloads.rclone.org/rclone-current-osx-amd64.zip</div><div class="line">unzip <span class="_">-a</span> rclone-current-osx-amd64.zip &amp;&amp; <span class="built_in">cd</span> rclone-*-osx-amd64</div></pre></td></tr></table></figure>
+<h3 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo mv rclone /usr/<span class="built_in">local</span>/bin/</div><div class="line"><span class="built_in">cd</span> .. &amp;&amp; rm -rf rclone-*-osx-amd64 rclone-current-osx-amd64.zip</div></pre></td></tr></table></figure>
+<h3 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone config</div></pre></td></tr></table></figure>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h2 id="操作命令"><a href="#操作命令" class="headerlink" title="操作命令"></a>操作命令</h2><p>rclone命令的语法格式：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Syntax: [options] subcommand &lt;parameters&gt; &lt;parameters...&gt;</div></pre></td></tr></table></figure></p>
+<p>常用的rclone命令有：</p>
+<ul>
+<li>rclone config - 以控制会话的形式添加rclone的配置，配置保存在.rclone.conf文件中。 </li>
+<li>rclone copy - 将文件从源复制到目的地址，跳过已复制完成的。 </li>
+<li>rclone  sync - 将源数据同步到目的地址，只更新目的地址的数据。   </li>
+<li>rclone move - 将源数据移动到目的地址。 </li>
+<li>rclone delete - 删除指定路径下的文件内容。</li>
+<li>rclone purge - 清空指定路径下所有文件数据。 </li>
+<li>rclone mkdir - 创建一个新目录。    </li>
+<li>rclone rmdir - 删除空目录。</li>
+<li>rclone check - 检查源和目的地址数据是否匹配。 </li>
+<li>rclone ls - 列出指定路径下所有的文件以及文件大小和路径。 </li>
+<li>rclone lsd - 列出指定路径下所有的目录/容器/桶。</li>
+<li>rclone lsl - 列出指定路径下所有文件以及修改时间、文件大小和路径。</li>
+<li>rclone md5sum  - 为指定路径下的所有文件产生一个md5sum文件。</li>
+<li>rclone sha1sum - 为指定路径下的所有文件产生一个sha1sum文件。</li>
+<li>rclone size - 获取指定路径下，文件内容的总大小。.</li>
+<li>rclone version - 查看当前版本。 </li>
+<li>rclone cleanup - 清空remote。</li>
+<li>rclone dedupe - 交互式查找重复文件，进行删除/重命名操作。</li>
+</ul>
+<h3 id="rclone-config"><a href="#rclone-config" class="headerlink" title="rclone config"></a>rclone config</h3><p>开启一个交互式的配置会话。命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone config</div></pre></td></tr></table></figure></p>
+<h3 id="rclone-copy"><a href="#rclone-copy" class="headerlink" title="rclone copy"></a>rclone copy</h3><p>将文件从源复制到目的地址，跳过已复制完成的。命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone copy <span class="built_in">source</span>:sourcepath dest:destpsth</div></pre></td></tr></table></figure></p>
+<p>注：<br>1、rclone copy复制总是指定路径下的数据；而不是当前目录。<br>2、–no-traverse 标志用于控制是否列出目的地址目录。</p>
+<h3 id="rclone-sync"><a href="#rclone-sync" class="headerlink" title="rclone sync"></a>rclone sync</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone sync <span class="built_in">source</span>:path dest:path</div></pre></td></tr></table></figure>
+<p>注：<br>1、同步数据时，可能会删除目的地址的数据；建议先使用–dry-run标志来检查要复制、删除的数据。<br>2、同步数据出错时，不会删除任何目的地址的数据。<br>3、rclone sync同步的始终是path目录下的数据，而不是path目录。（空目录将不会被同步）</p>
+<h3 id="rclone-move"><a href="#rclone-move" class="headerlink" title="rclone move"></a>rclone move</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone move <span class="built_in">source</span>:path dest:path</div></pre></td></tr></table></figure>
+<p>注：<br>1、同步数据时，可能会删除目的地址的数据；建议先使用–dry-run标志来检查要复制、删除的数据。</p>
+<h3 id="rclone-purge"><a href="#rclone-purge" class="headerlink" title="rclone purge"></a>rclone purge</h3><p>清空path目录和数据。命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone purge remote:path</div></pre></td></tr></table></figure></p>
+<p>注：<br>1、此命令，include/exclude 过滤器失效。<br>2、删除path目录下部分数据，请使用rclone delete 命令</p>
+<h3 id="rclone-mkdir"><a href="#rclone-mkdir" class="headerlink" title="rclone mkdir"></a>rclone mkdir</h3><p>创建path目录。命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone mkdir remote:path</div></pre></td></tr></table></figure></p>
+<h3 id="rclone-rmdir"><a href="#rclone-rmdir" class="headerlink" title="rclone rmdir"></a>rclone rmdir</h3><p>删除一个空目录。命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone rmdir remote:path</div></pre></td></tr></table></figure></p>
+<p>注：<br>1、不能删除非空的目录，删除非空目录请使用 rclone purge。</p>
+<h3 id="rclone-check"><a href="#rclone-check" class="headerlink" title="rclone check"></a>rclone check</h3><p>检查源和目标地址文件是否匹配。命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone check <span class="built_in">source</span>:path dest:path</div></pre></td></tr></table></figure></p>
+<p>注：<br>1、–size-only标志用于指定，只比较大小，不比较MD5SUMs。</p>
+<h3 id="rclone-ls"><a href="#rclone-ls" class="headerlink" title="rclone ls"></a>rclone ls</h3><p>列出指定path下，所有的文件以及文件大小和路径。命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone ls remote:path</div></pre></td></tr></table></figure></p>
+<h3 id="rclone-lsd"><a href="#rclone-lsd" class="headerlink" title="rclone lsd"></a>rclone lsd</h3><p>列出指定path下，所有目录、容器、桶。命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone lsd remote:path</div></pre></td></tr></table></figure></p>
+<h3 id="rclone-delete"><a href="#rclone-delete" class="headerlink" title="rclone delete"></a>rclone delete</h3><p>删除指定目录的内容。命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone delete remote:path</div></pre></td></tr></table></figure></p>
+<p>注：<br>1、不同于rclone purge，rclone delete 可使用 include/exclude 过滤器选择删除文件内容。<br>    eg：<br>    删除文件大小大于100M的文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 先检查哪些文件将被删除</div><div class="line">rclone --min-size 100M lsl remote:path                  # 使用rclone lsl 列出大于100M的文件</div><div class="line">rclone --dry-run --min-size 100M delete remote:path    # 使用--dry-run 检查将要被删除的文件</div><div class="line">	</div><div class="line"># 使用 rclone delete 进行文件删除</div><div class="line">rclone --min-size 100M delete remote:path</div></pre></td></tr></table></figure></p>
+<h3 id="rclone-size"><a href="#rclone-size" class="headerlink" title="rclone size"></a>rclone size</h3><p>获取指定path下所有数据文件的总大小。命令格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rclone size remote:path</div></pre></td></tr></table></figure></p>
+<h3 id="more"><a href="#more" class="headerlink" title="more"></a>more</h3><p>更多rclone命令，详见<a href="http://rclone.org/commands/" target="_blank" rel="external">http://rclone.org/commands/</a> 。</p>
+<h2 id="配置rclone"><a href="#配置rclone" class="headerlink" title="配置rclone"></a>配置rclone</h2><p>rclone 提供了交互式配置会话的方式来进行rclone的配置；每次配置的信息存储在.rclone.conf文件中。</p>
+<h3 id="配置示例"><a href="#配置示例" class="headerlink" title="配置示例"></a>配置示例</h3><p>在这里，我们使用共享存储KS3示例，来进行rclone的配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 执行rclone config 开启配置会话</span></div><div class="line">$ rclone config </div><div class="line">No remotes found - make a new one</div><div class="line">n) New remote</div><div class="line">s) Set configuration password</div><div class="line">q) Quit config</div><div class="line">n/s/q&gt; n                     <span class="comment"># 输入n，配置一个新的remote</span></div><div class="line">name&gt; ks3-remote             <span class="comment"># 输入remote的名字，这里命名为 ks3-remote</span></div><div class="line">Type of storage to configure.</div><div class="line">Choose a number from below, or <span class="built_in">type</span> <span class="keyword">in</span> your own value</div><div class="line"> 1 / Amazon Drive</div><div class="line">   \ <span class="string">"amazon cloud drive"</span></div><div class="line"> 2 / Amazon S3 (also Dreamhost, Ceph, Minio)</div><div class="line">   \ <span class="string">"s3"</span></div><div class="line"> 3 / Backblaze B2</div><div class="line">   \ <span class="string">"b2"</span></div><div class="line"> 4 / Dropbox</div><div class="line">   \ <span class="string">"dropbox"</span></div><div class="line"> 5 / Encrypt/Decrypt a remote</div><div class="line">   \ <span class="string">"crypt"</span></div><div class="line"> 6 / Google Cloud Storage (this is not Google Drive)</div><div class="line">   \ <span class="string">"google cloud storage"</span></div><div class="line"> 7 / Google Drive</div><div class="line">   \ <span class="string">"drive"</span></div><div class="line"> 8 / Hubic</div><div class="line">   \ <span class="string">"hubic"</span></div><div class="line"> 9 / Kingsoft Cloud KS3</div><div class="line">   \ <span class="string">"ks3"</span></div><div class="line">10 / Local Disk</div><div class="line">   \ <span class="string">"local"</span></div><div class="line">11 / Microsoft OneDrive</div><div class="line">   \ <span class="string">"onedrive"</span></div><div class="line">12 / Openstack Swift (Rackspace Cloud Files, Memset Memstore, OVH)</div><div class="line">   \ <span class="string">"swift"</span></div><div class="line">13 / Yandex Disk</div><div class="line">   \ <span class="string">"yandex"</span></div><div class="line">Storage&gt; 9                   <span class="comment"># 选择9，也可直接输入ks3</span></div><div class="line">Get KS3 credentials from runtime (environment variables). Only applies <span class="keyword">if</span> access_key_id and secret_access_key is blank.</div><div class="line">Choose a number from below, or <span class="built_in">type</span> <span class="keyword">in</span> your own value</div><div class="line"> 1 / Enter KS3 credentials <span class="keyword">in</span> the next step</div><div class="line">   \ <span class="string">"false"</span></div><div class="line"> 2 / Get KS3 credentials from the environment (env vars)</div><div class="line">   \ <span class="string">"true"</span></div><div class="line">env_auth&gt; 1                 <span class="comment"># 选择1，直接配置access_key_id 和 secret_access_key  </span></div><div class="line">AWS Access Key ID - leave blank <span class="keyword">for</span> anonymous access or runtime credentials.</div><div class="line">access_key_id&gt; sgyO124X+/ZRbmgrbP7d    <span class="comment"># 键入ks3的access_key_id</span></div><div class="line">AWS Secret Access Key (password) - leave blank <span class="keyword">for</span> anonymous access or runtime credentials.</div><div class="line">secret_access_key&gt; p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH    <span class="comment"># 键入ks3的secret_access_key</span></div><div class="line">Region to connect to.</div><div class="line">Choose a number from below, or <span class="built_in">type</span> <span class="keyword">in</span> your own value</div><div class="line"> 1 / Beijing Region(the default region).</div><div class="line">   \ <span class="string">"ks3-cn-beijing"</span></div><div class="line"> 2 / Hangzhou Region.</div><div class="line">   \ <span class="string">"ks3-cn-hangzhou"</span></div><div class="line"> 3 / Shanghai Region.</div><div class="line">   \ <span class="string">"ks3-cn-shanghai"</span></div><div class="line"> 4 / HongKong Region.</div><div class="line">   \ <span class="string">"ks3-cn-hk-1"</span></div><div class="line"> 5 / US West Region.</div><div class="line">   \ <span class="string">"ks3-us-west-1"</span></div><div class="line">region&gt; 1               <span class="comment"># 选择ks3的region，这里选择北京的region</span></div><div class="line">Endpoint <span class="keyword">for</span> KS3 API.</div><div class="line">Leave blank <span class="keyword">if</span> using KS3 to use the default endpoint <span class="keyword">for</span> the region.</div><div class="line">endpoint&gt;            <span class="comment"># 不使用外部的endpoint，直接回车略过</span></div><div class="line">An internal endpoint or the public endpoint <span class="keyword">for</span> KS3 access. The default is false.</div><div class="line">Choose a number from below, or <span class="built_in">type</span> <span class="keyword">in</span> your own value</div><div class="line"> 1 / Internal endpoint.</div><div class="line">   \ <span class="string">"false"</span></div><div class="line"> 2 / Public endpoint.</div><div class="line">   \ <span class="string">"true"</span></div><div class="line">internal&gt; 1          <span class="comment"># 选择1，从公网访问，不使用内网加速。 在金山云的云主机中建议选择2，使用内网加速，且不计流量。</span></div><div class="line">Canned ACL used when creating buckets and/or storing objects <span class="keyword">in</span> KS3.</div><div class="line">Choose a number from below, or <span class="built_in">type</span> <span class="keyword">in</span> your own value</div><div class="line"> 1 / Owner gets FULL_CONTROL. No one <span class="keyword">else</span> has access rights (default).</div><div class="line">   \ <span class="string">"private"</span></div><div class="line"> 2 / Owner gets FULL_CONTROL. The AllUsers group gets READ access.</div><div class="line">   \ <span class="string">"public-read"</span></div><div class="line">   / Owner gets FULL_CONTROL. The AllUsers group gets READ and WRITE access.</div><div class="line"> 3 | Granting this on a bucket is generally not recommended.</div><div class="line">   \ <span class="string">"public-read-write"</span></div><div class="line">acl&gt; 1    <span class="comment"># 选择1（私有控制）</span></div><div class="line">The server-side encryption algorithm used when storing this object <span class="keyword">in</span> S3.</div><div class="line">Choose a number from below, or <span class="built_in">type</span> <span class="keyword">in</span> your own value</div><div class="line"> 1 / None</div><div class="line">   \ <span class="string">""</span></div><div class="line"> 2 / AES256</div><div class="line">   \ <span class="string">"AES256"</span></div><div class="line">server_side_encryption&gt; 2  <span class="comment"># 选择2，使用AES256加密。</span></div><div class="line">Remote config</div><div class="line">--------------------</div><div class="line">[ks3-remote]</div><div class="line">env_auth = <span class="literal">false</span></div><div class="line">access_key_id = sgyO124X+/ZRbmgrbP7d</div><div class="line">secret_access_key = p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH</div><div class="line">region = ks3-cn-beijing</div><div class="line">endpoint = </div><div class="line">internal = <span class="literal">false</span></div><div class="line">acl = private</div><div class="line">server_side_encryption = AES256</div><div class="line">--------------------</div><div class="line">y) Yes this is OK</div><div class="line">e) Edit this remote</div><div class="line">d) Delete this remote</div><div class="line">y/e/d&gt; y   <span class="comment"># 检查生成的配置，确认无误，选择y确认</span></div><div class="line">Current remotes:</div><div class="line"></div><div class="line">Name                 Type</div><div class="line">====                 ====</div><div class="line">ks3-remote           ks3</div><div class="line"></div><div class="line">e) Edit existing remote</div><div class="line">n) New remote</div><div class="line">d) Delete remote</div><div class="line">s) Set configuration password</div><div class="line">q) Quit config</div><div class="line">e/n/d/s/q&gt; q  <span class="comment"># 配置完成，选择q退出。</span></div></pre></td></tr></table></figure>
+<p>配置完成，检查生成的配置文件~/.rclone.conf:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ more ~/.rclone.conf</div><div class="line">[ks3-remote]          <span class="comment"># 远程存储的名称：ks3-remote</span></div><div class="line"><span class="built_in">type</span> = ks3            <span class="comment"># 远程存储的类型：ks3</span></div><div class="line">env_auth = <span class="literal">false</span>      <span class="comment"># 是否从环境变量中读取access_key和secret_key </span></div><div class="line">access_key_id = sgyO124X+/ZRbmgrbP7d   <span class="comment"># 当前ks3的access_key</span></div><div class="line">secret_access_key = p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH  <span class="comment"># 当前ks3的secret_key</span></div><div class="line">region = ks3-cn-beijing  <span class="comment"># 所使用ks3的region名称</span></div><div class="line">endpoint =            <span class="comment"># 是否使用外部endpoint</span></div><div class="line">internal = <span class="literal">false</span>      <span class="comment"># 是否从内网访问</span></div><div class="line">acl = private         <span class="comment"># 访问控制策略：私有控制</span></div><div class="line">server_side_encryption = AES256 <span class="comment"># 加密</span></div></pre></td></tr></table></figure></p>
+<h3 id="测试配置"><a href="#测试配置" class="headerlink" title="测试配置"></a>测试配置</h3><p>查看上述配置远程存储所有的桶：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ rclone lsd ks3-remote:</div><div class="line">          -1 2016-06-07 07:26:04        -1 dockertest2</div><div class="line">          -1 2016-11-21 08:24:52        -1 ks3-fs-test</div><div class="line">2016/11/28 15:26:25 </div><div class="line">Transferred:      0 Bytes (0 Bytes/s)</div><div class="line">Errors:                 0</div><div class="line">Checks:                 0</div><div class="line">Transferred:            0</div><div class="line">Elapsed time:       200ms</div></pre></td></tr></table></figure></p>
+<h2 id="一些实用场景"><a href="#一些实用场景" class="headerlink" title="一些实用场景"></a>一些实用场景</h2><h3 id="将本地目录同步到ks3"><a href="#将本地目录同步到ks3" class="headerlink" title="将本地目录同步到ks3"></a>将本地目录同步到ks3</h3><p>一般，由于对象存储具有廉价、高可用、安全、可靠等特性；我们通常会用作本地数据（日志、图片、视频）的存储或是备份。通常在使用对象存储存储数据时，往往需要调用官方的SDK，需要一定的开发量。尤其当我们仅仅是需要备份某个盘或是目录下的日志时，这时候使用rclone这样的命令行工具，能方便把数据存储（或备份）到远程存储上，且不受文件大小的限制（比如ks3单个文件上传大小不能超过5G）。</p>
+<p>比如，将/home/local/directory同步到远程存储的某个bucket中，操作命令如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ rclone sync /home/<span class="built_in">local</span>/directory remote:bucket</div></pre></td></tr></table></figure></p>
+<h3 id="AWS-s3-迁移到-KS3"><a href="#AWS-s3-迁移到-KS3" class="headerlink" title="AWS s3 迁移到 KS3"></a>AWS s3 迁移到 KS3</h3><p>由于s3的region多建在国外，s3的资费相对较高。那么将一部分数据迁移到KS3，是比较经济的。除了使用KS3官方提供的镜像服务，可以别的远程存储迁移到KS3；rclone为此提供了另外一种可能。</p>
+<p>比如将远程存储s3的桶s3-log，迁移到远程存储ks3的桶ks3-log:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ rclone sync s3-remote:s3-log ks3-remote:ks3-log</div></pre></td></tr></table></figure></p>
+<p>远程存储s3-remote、ks3-remote的配置信息如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">[s3-remote]</div><div class="line"><span class="built_in">type</span> = s3-remote</div><div class="line">env_auth = <span class="literal">false</span></div><div class="line">access_key_id = AKIAJTT3FZHMRQSXFZFQ</div><div class="line">secret_access_key = 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</div><div class="line">region = ap-northeast-2</div><div class="line">endpoint = </div><div class="line">location_constraint = ap-northeast-2</div><div class="line">acl = private</div><div class="line">server_side_encryption = AES256</div><div class="line">storage_class = </div><div class="line"></div><div class="line">[ks3-remote]</div><div class="line"><span class="built_in">type</span> = ks3</div><div class="line">env_auth = <span class="literal">false</span></div><div class="line">access_key_id = sgyO124X+/ZRbmgrbP7d</div><div class="line">secret_access_key = p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH</div><div class="line">region = ks3-cn-beijing</div><div class="line">endpoint = </div><div class="line">internal = <span class="literal">false</span></div><div class="line">acl = private</div><div class="line">server_side_encryption = AES256</div></pre></td></tr></table></figure></p>
+<h3 id="KS3-bucket之间的同步"><a href="#KS3-bucket之间的同步" class="headerlink" title="KS3 bucket之间的同步"></a>KS3 bucket之间的同步</h3><p>KS3对象存储不支持使用KS3存储的桶作为另一个桶的镜像。</p>
+<p>比如：我们需要搭建一个大型的docker hub，为了保证不同地域用户下载和上传速度（虽然KS3自带CDN），需要在北京、上海分别建立两个镜像中心；这样在拉取镜像时，南方用户只需要去上海的镜像中心拉取数据，北方用户则到北京镜像中心拉取数据；极大地提高数据的访问速度。<br>那么类似这样的需求，我们不得不保持两个镜像中心的数据一致性；在不适用官方SDK的情况下，我们可以使用rclone sync同步不同region下bucket中的数据：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ rclone sync ks3-beijing:bucket1 ks3-shanghai:bucket2</div></pre></td></tr></table></figure></p>
+<p>注：<br>即便bucket1与bucket2共用一套账户体系，即ks3-beijing 和 ks3-shanghai的access_key_id和secret_access_key是一样的。仍然需要分别建立 ks3-beijing 和 ks3-shanghai 两个远程存储的配置。<br>例如：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">$ more ~/.rclone</div><div class="line">[ks3-beijing]                                                                                               </div><div class="line"><span class="built_in">type</span> = ks3  </div><div class="line">env_auth = <span class="literal">false</span></div><div class="line">access_key_id = sgyO124X+/ZRbmgrbP7d</div><div class="line">secret_access_key = p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH</div><div class="line">region = ks3-cn-beijing</div><div class="line">endpoint =  </div><div class="line">internal = <span class="literal">true</span></div><div class="line">acl = private</div><div class="line">server_side_encryption = AES256</div><div class="line">              </div><div class="line">              </div><div class="line">[ks3-shanghai]  </div><div class="line"><span class="built_in">type</span> = ks3  </div><div class="line">env_auth = <span class="literal">false</span></div><div class="line">access_key_id = sgyO124X+/ZRbmgrbP7d</div><div class="line">secret_access_key = p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH</div><div class="line">region = ks3-cn-shanghai</div><div class="line">endpoint =  </div><div class="line">internal = <span class="literal">true</span></div><div class="line">acl = private</div><div class="line">server_side_encryption = AES256</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/KS3/" rel="tag"># KS3</a>
+          
+            <a href="/tags/Rclone/" rel="tag"># Rclone</a>
+          
+            <a href="/tags/S3/" rel="tag"># S3</a>
+          
+            <a href="/tags/共享存储/" rel="tag"># 共享存储</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/06/jenkins-gitlab-docker/" rel="next" title="基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群">
+                <i class="fa fa-chevron-left"></i> 基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/06/s3fs-guide/" rel="prev" title="s3fs使用指南">
+                s3fs使用指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Lain" />
+          <p class="site-author-name" itemprop="name">Lain</p>
+          <p class="site-description motion-element" itemprop="description">藏剑于身 待时而动</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/softlns" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+        
+        <div class="feed-link motion-element">
+        <iframe style="background:transparent !important" scrolling="no" frameborder="0" allowtransparency="true" width="220" height="220" src="//rf.revolvermaps.com/w/6/a/a.php?i=5ayy6umx8je&amp;m=7&amp;s=270&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80"></iframe>
+        </div>
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux下安装"><span class="nav-number">2.0.1.</span> <span class="nav-text">Linux下安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下载安装包"><span class="nav-number">2.0.1.1.</span> <span class="nav-text">下载安装包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装-1"><span class="nav-number">2.0.1.2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置"><span class="nav-number">2.0.1.3.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MacOS下安装"><span class="nav-number">2.0.2.</span> <span class="nav-text">MacOS下安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下载安装包-1"><span class="nav-number">2.0.2.1.</span> <span class="nav-text">下载安装包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-2"><span class="nav-number">2.0.3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-1"><span class="nav-number">2.0.4.</span> <span class="nav-text">配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#操作命令"><span class="nav-number">3.1.</span> <span class="nav-text">操作命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rclone-config"><span class="nav-number">3.1.1.</span> <span class="nav-text">rclone config</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rclone-copy"><span class="nav-number">3.1.2.</span> <span class="nav-text">rclone copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rclone-sync"><span class="nav-number">3.1.3.</span> <span class="nav-text">rclone sync</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rclone-move"><span class="nav-number">3.1.4.</span> <span class="nav-text">rclone move</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rclone-purge"><span class="nav-number">3.1.5.</span> <span class="nav-text">rclone purge</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rclone-mkdir"><span class="nav-number">3.1.6.</span> <span class="nav-text">rclone mkdir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rclone-rmdir"><span class="nav-number">3.1.7.</span> <span class="nav-text">rclone rmdir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rclone-check"><span class="nav-number">3.1.8.</span> <span class="nav-text">rclone check</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rclone-ls"><span class="nav-number">3.1.9.</span> <span class="nav-text">rclone ls</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rclone-lsd"><span class="nav-number">3.1.10.</span> <span class="nav-text">rclone lsd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rclone-delete"><span class="nav-number">3.1.11.</span> <span class="nav-text">rclone delete</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rclone-size"><span class="nav-number">3.1.12.</span> <span class="nav-text">rclone size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#more"><span class="nav-number">3.1.13.</span> <span class="nav-text">more</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置rclone"><span class="nav-number">3.2.</span> <span class="nav-text">配置rclone</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置示例"><span class="nav-number">3.2.1.</span> <span class="nav-text">配置示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试配置"><span class="nav-number">3.2.2.</span> <span class="nav-text">测试配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些实用场景"><span class="nav-number">3.3.</span> <span class="nav-text">一些实用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将本地目录同步到ks3"><span class="nav-number">3.3.1.</span> <span class="nav-text">将本地目录同步到ks3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AWS-s3-迁移到-KS3"><span class="nav-number">3.3.2.</span> <span class="nav-text">AWS s3 迁移到 KS3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KS3-bucket之间的同步"><span class="nav-number">3.3.3.</span> <span class="nav-text">KS3 bucket之间的同步</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lain</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'https://softlns.github.io';
+      var disqus_identifier = '2016/12/06/rlcone-guide/';
+
+      var disqus_title = "Rlcone使用指南";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("xUeT8yKduFzhHlntroA20LXf-gzGzoHsz", "eSByTxAGNpd3WWsbNMoTdMnR");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/particle.js"></script>
+  
+    <!-- custom analytics part create by lain -->
+<script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+<script>AV.initialize("xUeT8yKduFzhHlntroA20LXf-gzGzoHsz", "eSByTxAGNpd3WWsbNMoTdMnR");</script>
+<script>
+function showTime(Counter) {
+	var query = new AV.Query(Counter);
+	$(".leancloud_visitors").each(function() {
+		var url = $(this).attr("id").trim();
+		query.equalTo("url", url);
+		query.find({
+			success: function(results) {
+				if (results.length == 0) {
+					var content = $(document.getElementById(url)).text() + ': 0';
+					$(document.getElementById(url)).text(content);
+					return;
+				}
+				for (var i = 0; i < results.length; i++) {
+					var object = results[i];
+					var content = $(document.getElementById(url)).text() + ': ' + object.get('time');
+					$(document.getElementById(url)).text(content);
+				}
+			},
+			error: function(object, error) {
+				console.log("Error: " + error.code + " " + error.message);
+			}
+		});
+	});
+}
+function addCount(Counter) {
+	var Counter = AV.Object.extend("Counter");
+	url = $(".leancloud_visitors").attr('id').trim();
+	title = $(".leancloud_visitors").attr('data-flag-title').trim();
+	var query = new AV.Query(Counter);
+	query.equalTo("url", url);
+	query.find({
+		success: function(results) {
+			if (results.length > 0) {
+				var counter = results[0];
+				counter.fetchWhenSave(true);
+				counter.increment("time");
+				counter.save(null, {
+					success: function(counter) {
+						var content = $(document.getElementById(url)).text() + ': ' + counter.get('time');
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(counter, error) {
+						console.log('Failed to save Visitor num, with error message: ' + error.message);
+					}
+				});
+			} else {
+				var newcounter = new Counter();
+				newcounter.set("title", title);
+				newcounter.set("url", url);
+				newcounter.set("time", 1);
+				newcounter.save(null, {
+					success: function(newcounter) {
+					    console.log("newcounter.get('time')="+newcounter.get('time'));
+						var content = $(document.getElementById(url)).text() + ': ' + newcounter.get('time');
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(newcounter, error) {
+						console.log('Failed to create');
+					}
+				});
+			}
+		},
+		error: function(error) {
+			console.log('Error:' + error.code + " " + error.message);
+		}
+	});
+}
+$(function() {
+	var Counter = AV.Object.extend("Counter");
+	if ($('.leancloud_visitors').length == 1) {
+		addCount(Counter);
+	} else if ($('.post-title-link').length > 1) {
+		showTime(Counter);
+	}
+});
+</script>
+
+  
+</body>
+</html>

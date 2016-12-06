@@ -1,0 +1,1244 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Docker,Jenkins,Gitlab,Swarm,持续集成,持续构建," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Lain's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="概述基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群">
+<meta property="og:url" content="https://softlns.github.io/2016/12/06/jenkins-gitlab-docker/index.html">
+<meta property="og:site_name" content="Lain's Blog">
+<meta property="og:description" content="概述基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群。">
+<meta property="og:image" content="https://softlns.github.io/images/1478836346389.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1478851124897.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1478853924711.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479044880231.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479045060175.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479045355005.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479045561748.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479089385376.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479090215977.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479090668198.jpg">
+<meta property="og:updated_time" content="2016-12-06T03:13:45.017Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群">
+<meta name="twitter:description" content="概述基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群。">
+<meta name="twitter:image" content="https://softlns.github.io/images/1478836346389.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '6342352355521988000',
+      author: 'Lain'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://softlns.github.io/2016/12/06/jenkins-gitlab-docker/"/>
+
+
+
+
+
+  <title> 基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群 | Lain's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Lain's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">藏剑于身 待时而动</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-board">
+          <a href="/board" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-commenting"></i> <br />
+            
+            留言板
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://softlns.github.io/2016/12/06/jenkins-gitlab-docker/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Lain">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Lain's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Lain's Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-06T11:04:54+08:00">
+                2016-12-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2016/12/06/jenkins-gitlab-docker/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/06/jenkins-gitlab-docker/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+            <span id="/2016/12/06/jenkins-gitlab-docker/" class="leancloud_visitors"  data-flag-title="基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群">
+              &nbsp; | &nbsp; 阅读次数
+            </span>
+          
+
+          
+          
+             <span id="/2016/12/06/jenkins-gitlab-docker/" class="leancloud_visitors" data-flag-title="基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群。</p>
+<a id="more"></a>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><ul>
+<li>Linux系统（以ubuntu示例）</li>
+<li>Docker运行环境</li>
+<li>docker-compose编排工具</li>
+</ul>
+<h3 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h3><p>安装Docker执行以下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -fsSL https://get.docker.io | bash</div></pre></td></tr></table></figure></p>
+<p>注：升级内核</p>
+<h3 id="安装docker-compose"><a href="#安装docker-compose" class="headerlink" title="安装docker-compose"></a>安装docker-compose</h3><p>默认的[官方文档][]安装命令如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -L https://github.com/docker/compose/releases/download/1.6.2/docker-compose-`uname <span class="_">-s</span>`-`uname -m` &gt; /usr/<span class="built_in">local</span>/bin/docker-compose</div></pre></td></tr></table></figure></p>
+<h2 id="搭建基础服务"><a href="#搭建基础服务" class="headerlink" title="搭建基础服务"></a>搭建基础服务</h2><p>CI、CD涉及的基础服务有：</p>
+<ol>
+<li>代码仓库（以Gitlab示例）</li>
+<li>镜像仓库（以搭建私有镜像仓库示例）</li>
+<li>代码构建（以Jenkins示例）</li>
+<li>容器集群（以swarm示例）</li>
+</ol>
+<h3 id="代码仓库（构建Gitlab服务）"><a href="#代码仓库（构建Gitlab服务）" class="headerlink" title="代码仓库（构建Gitlab服务）"></a>代码仓库（构建Gitlab服务）</h3><p><a href="https://about.gitlab.com/" target="_blank" rel="external">GitLab</a>是一个利用 Ruby on Rails 开发的开源应用程序，实现一个自托管的Git项目仓库，可通过Web界面进行访问公开的或者私人项目；类似于Github。</p>
+<p>选一台主机以docker化的方式来搭建Gitlab服务。（已有私有Gitlab仓库或使用Github，可跳过此步骤）</p>
+<p>我们选择Docker Hub上的<a href="https://hub.docker.com/r/sameersbn/gitlab/" target="_blank" rel="external">sameersbn/gitlab</a>镜像来快速构建Gitlab服务。<br>根据<a href="https://github.com/sameersbn/docker-gitlab/blob/master/README.md" target="_blank" rel="external">sameersbn/docker-gitlab给出的文档</a>，我们需要启动三个容器组件.</p>
+<h4 id="Docker-cli启动方式"><a href="#Docker-cli启动方式" class="headerlink" title="Docker cli启动方式"></a>Docker cli启动方式</h4><ul>
+<li>启动postgresql容器（可使用外部数据、也可使用mqsql存储，具体参见文档）</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">docker run --name gitlab-postgresql <span class="_">-d</span> \</div><div class="line">    --env <span class="string">'DB_NAME=gitlabhq_production'</span> \</div><div class="line">    --env <span class="string">'DB_USER=gitlab'</span> \ </div><div class="line">	--env <span class="string">'DB_PASS=password'</span> \</div><div class="line">    --env <span class="string">'DB_EXTENSION=pg_trgm'</span> \</div><div class="line">    --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \</div><div class="line">    sameersbn/postgresql:9.5-3</div></pre></td></tr></table></figure>
+<ul>
+<li><p>启动redis容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">docker run --name gitlab-redis <span class="_">-d</span> \</div><div class="line">    --volume /srv/docker/gitlab/redis:/var/lib/redis \</div><div class="line">    sameersbn/redis:latest</div></pre></td></tr></table></figure>
+</li>
+<li><p>启动gitlab容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">docker run --name gitlab <span class="_">-d</span> \</div><div class="line">    --link gitlab-postgresql:postgresql --link gitlab-redis:redisio \</div><div class="line">    --publish 10022:22 --publish 10080:80 \</div><div class="line">    --env <span class="string">'GITLAB_PORT=10080'</span> \</div><div class="line">	--env <span class="string">'GITLAB_SSH_PORT=10022'</span> \</div><div class="line">    --env <span class="string">'GITLAB_SECR</span></div><div class="line">	ETS_DB_KEY_BASE=long-and-random-alpha-numeric-string' \</div><div class="line">    --env <span class="string">'GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alpha-numeric-string'</span> \</div><div class="line">    --env <span class="string">'GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alpha-numeric-string'</span> \</div><div class="line">    --volume /srv/docker/gitlab/gitlab:/home/git/data \</div><div class="line">    sameersbn/gitlab:latest</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="docker-compose启动方式"><a href="#docker-compose启动方式" class="headerlink" title="docker-compose启动方式"></a>docker-compose启动方式</h4><p>通常处理复杂容器之间的配置依赖关系可以使用docker-compose工具来管理，用法参见<a href="https://docs.docker.com/compose/" target="_blank" rel="external">docker-compose文档</a>。</p>
+<p>使用docker-compose的启动方式，需要docker-compose.yml文件，内容如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">gitlab:</div><div class="line">  image: sameersbn/gitlab</div><div class="line">  ports:</div><div class="line">    - <span class="string">"10022:22"</span></div><div class="line">    - <span class="string">"10080:80"</span></div><div class="line">  links:</div><div class="line">    - gitlab-redis:redisio</div><div class="line">    - gitlab-postgresql:postgresql</div><div class="line">  environment:</div><div class="line">    - GITLAB_PORT=80</div><div class="line">    - GITLAB_SSH_PORT=22</div><div class="line">    - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string</div><div class="line">    - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alpha-numeric-string</div><div class="line">    - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alpha-numeric-string</div><div class="line">  volumes:</div><div class="line">    - /srv/docker/gitlab/gitlab:/home/git/data</div><div class="line">  restart: always</div><div class="line"></div><div class="line">gitlab-redis:</div><div class="line">  image: sameersbn/redis</div><div class="line">  volumes:</div><div class="line">    - /srv/docker/gitlab/redis:/var/lib/redis</div><div class="line">  restart: always</div><div class="line"></div><div class="line">gitlab-postgresql:</div><div class="line">  image: sameersbn/postgresql:9.5-3</div><div class="line">  environment:</div><div class="line">    - DB_NAME=gitlabhq_production</div><div class="line">    - DB_USER=gitlab</div><div class="line">    - DB_PASS=password</div><div class="line">    - DB_EXTENSION=pg_trgm</div><div class="line">  volumes:</div><div class="line">    - /srv/docker/gitlab/postgresql:/var/lib/postgresql</div><div class="line">  restart: always</div></pre></td></tr></table></figure></p>
+<p>执行以下命令，构建gitlab服务<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker-compose up <span class="_">-d</span></div></pre></td></tr></table></figure></p>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>执行docker ps命令查看：</p>
+<p><img src="/images/1478836346389.jpg" alt="docker ps 结果显示" title="Gitlab 相关容器运行状态"></p>
+<p>访问\<your host\="">:10080，查看Gitlab网页是否正常，并设置root账初始密码。</your></p>
+<h3 id="镜像仓库（构建Docker私有仓库）"><a href="#镜像仓库（构建Docker私有仓库）" class="headerlink" title="镜像仓库（构建Docker私有仓库）"></a>镜像仓库（构建Docker私有仓库）</h3><p>镜像管理是Docker容器的核心，Docker官方在Github上有一个项目<a href="https://github.com/docker/distribution" target="_blank" rel="external">docker-registry</a>, 专门用于自建Docker的私有镜像库。</p>
+<p>在CI、CD中，需要一个Docker镜像仓库来存放每次构建的镜像（使用公有镜像仓库如Docker Hub可以自行跳过）。<br>从镜像的安全、可靠、访问速度等因素考虑，搭建一个私有的镜像仓库，对企业级开发和实践是很有必要的。</p>
+<h4 id="Docker-cli构建方式"><a href="#Docker-cli构建方式" class="headerlink" title="Docker cli构建方式"></a>Docker cli构建方式</h4><p>最简便的创建方式：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker run <span class="_">-d</span>  --restart=always --name registry \</div><div class="line"> -v  /mnt/docker/registry:/var/lib/registry  -p 5000:5000 registry:2</div></pre></td></tr></table></figure></p>
+<h4 id="docker-compose构建方式"><a href="#docker-compose构建方式" class="headerlink" title="docker-compose构建方式"></a>docker-compose构建方式</h4><p> 编写docker-compose.yml文件，内容如下：<br> <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">registry:</div><div class="line"> image: registry:2</div><div class="line"> ports:</div><div class="line">   - <span class="string">"5000:5000"</span></div><div class="line"> volumes:</div><div class="line">   - /mnt/docker/registry:/var/lib/registry</div><div class="line"> restart: always</div></pre></td></tr></table></figure></p>
+<p>执行docker-compose up -d命令</p>
+<h4 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h4><ul>
+<li>执行docker ps 可查看registry容器运行状态。</li>
+<li>测试推送/拉取 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker pull 		镜像仓库ip:端口/&lt;命名空间&gt;/项目名称	<span class="comment">#  拉取镜像</span></div><div class="line">docker push       镜像仓库ip:端口/&lt;命名空间&gt;/项目名称	  <span class="comment"># 推送镜像</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>注：docker私有镜像仓库 拉取/推送 失败，提示不能使用http连接。解决方法：<br>1、设置https访问，参见<a href="https://softlns.github.io/2016/11/07/create-ks3-harbor-registry/#more">企业级的Docker Registry搭建</a>。<br>2、在docker启动参数里添加–insecure-registry \<your registry="" host\="">:\<port\>，然后重启docker。</port\></your></p>
+<h3 id="镜像构建（搭建Jenkins服务）"><a href="#镜像构建（搭建Jenkins服务）" class="headerlink" title="镜像构建（搭建Jenkins服务）"></a>镜像构建（搭建Jenkins服务）</h3><p>Jenkins是基于Java开发的一种开源持续集成工具，监控并触发持续重复的工作，具有开源，支持多平台和插件扩展，安装简单，界面化管理等特点。Jenkins使用job来描述每一步工作，节点是用来执行项目的环境。Master节点是Jenkins job的默认执行环境，也是Jenkins应用本身的安装环境<br>使用官方的Jenkins镜像来构建我们的Jenkins服务。</p>
+<h4 id="Docker-cli构建方式-1"><a href="#Docker-cli构建方式-1" class="headerlink" title="Docker cli构建方式"></a>Docker cli构建方式</h4><p>执行以下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">docker run  docker run  <span class="_">-d</span>  -p 8080:8080 \</div><div class="line">--name jenkins  --restart=always -v /mnt/jenkins_home:/var/jenkins_home \</div><div class="line">-v /var/run/docker.sock:/var/run/docker.sock   jayqqaa12/jenkins</div></pre></td></tr></table></figure></p>
+<p>参数说明：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-v /mnt/jenkins_home:/var/jenkins_home   <span class="comment"># 映射volumes到本地存储</span></div><div class="line">-v /var/run/docker.sock:/var/run/docker.sock  <span class="comment"># 映射主机的docker到容器里面 这样在容器里面就可以使用主机安装的 docker 了</span></div></pre></td></tr></table></figure></p>
+<h4 id="docker-compose构建方式-1"><a href="#docker-compose构建方式-1" class="headerlink" title="docker-compose构建方式"></a>docker-compose构建方式</h4><p>编写docker-compose.yml文件，内容如下：<br> <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">jenkins:</div><div class="line"> image: jayqqaa12/jenkins</div><div class="line"> ports:</div><div class="line">   - <span class="string">"8080:8080"</span></div><div class="line"> volumes:</div><div class="line">   - /var/run/docker.sock:/var/run/docker.sock</div><div class="line">   - /mnt/jenkins_home:/var/jenkins_home</div><div class="line"> restart: always</div></pre></td></tr></table></figure></p>
+<p>  执行docker-compose up -d命令</p>
+<h4 id="测试-2"><a href="#测试-2" class="headerlink" title="测试"></a>测试</h4><ul>
+<li>执行docker ps 查看jenkins容器运行情况</li>
+<li>在浏览器中，打开http://\<your jenkins="" host\="">:8080，进入jenkins，默认用户/密码（admin/admin）</your></li>
+</ul>
+<h3 id="容器集群（构建Docker-Swarm集群）"><a href="#容器集群（构建Docker-Swarm集群）" class="headerlink" title="容器集群（构建Docker Swarm集群）"></a>容器集群（构建Docker Swarm集群）</h3><p>容器集群管理工具主要有k8s、mesos、swarm，以及从Docker1.12版本出现的swarmkit。这里以swarm示例容器集群的简单操作。</p>
+<p>Swarm是Docker官方发布的一套较为简单的容器集群管理工具，它将一群Docker宿主机变成一个单一的虚拟主机。Swarm使用标准的Docker API接口，因此能可以很方便地和docker的标准API进行集成。</p>
+<p>下面，使用Docker-Swarm来创建一个docker容器集群</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#创建一个swarm集群 ，会返回一个token来替换下面命令的&lt;token&gt;</span></div><div class="line">docker run --rm swarm create </div><div class="line"> </div><div class="line"><span class="comment"># 创建集群的管理容器swarm  来管理所有节点 </span></div><div class="line">docker run <span class="_">-d</span> --name swarm-manage --restart=always -p \</div><div class="line">2376:2375 swarm manage token://&lt;token&gt;</div><div class="line"> </div><div class="line"><span class="comment">#添加节点到swarm集群中  </span></div><div class="line">docker run <span class="_">-d</span> --restart=always --name swarm-agent swarm \</div><div class="line">join --addr=当前服务器的ip:2375 token://&lt;token&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#查看集群的节点信息 </span></div><div class="line">docker -H 管理节点的ip:2376 info</div></pre></td></tr></table></figure>
+<p>查看当前集群信息，只有一个节点：</p>
+<p><img src="/images/1478851124897.jpg" alt="swarm集群信息" title="集群信息.jpg"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker -H 管理节点的ip:2376 run  xxx   <span class="comment">#运行容器</span></div><div class="line">docker -H 管理节点的ip:2376 ps  xxx    <span class="comment">#查看集群容器运行情况</span></div></pre></td></tr></table></figure>
+<p>以上是使用swarm集群运行、查看容器，更多swarm集群操作详见<a href="https://github.com/docker/swarm" target="_blank" rel="external">swarm文档</a>。</p>
+<p>注：节点发现无法连接，则需要在Docker daemon添加启动参数：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">--insecure-registry &lt;镜像仓库host&gt;:&lt;port&gt; 		  <span class="comment"># 设置仓库为http访问  </span></div><div class="line">-H unix:///var/run/docker.sock  -H 0.0.0.0:2375  <span class="comment">#打开节点对外通信接口 </span></div><div class="line">--label label_name=swarm-node1 					  <span class="comment"># 设置一下label 方便区分</span></div></pre></td></tr></table></figure></p>
+<h2 id="Demo-基于Docker构建持续集成（CI）、持续部署（CD）的Flask项目"><a href="#Demo-基于Docker构建持续集成（CI）、持续部署（CD）的Flask项目" class="headerlink" title="Demo: 基于Docker构建持续集成（CI）、持续部署（CD）的Flask项目"></a>Demo: 基于Docker构建持续集成（CI）、持续部署（CD）的Flask项目</h2><p>以上，我们搭建了基于Docker的CI、CD的基础服务，下面我们创建一个Flask项目的Demo来测试下：</p>
+<ol>
+<li>在gitlab创建python-hello-world项目仓库</li>
+<li>clone项目，本地开发</li>
+<li>配置jenkins</li>
+<li>触发构建</li>
+</ol>
+<h3 id="gitlab上新建项目"><a href="#gitlab上新建项目" class="headerlink" title="gitlab上新建项目"></a>gitlab上新建项目</h3><p>在gitlab创建python-hello-world项目仓库。</p>
+<p><img src="/images/1478853924711.jpg" alt="enter description here" title="gitlab项目信息"></p>
+<h3 id="本地开发"><a href="#本地开发" class="headerlink" title="本地开发"></a>本地开发</h3><h4 id="编写Flask应用"><a href="#编写Flask应用" class="headerlink" title="编写Flask应用"></a>编写Flask应用</h4><p>创建app.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</div><div class="line"></div><div class="line">app = Flask(__name__)</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@app.route('/')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello_world</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> <span class="string">"Hello World! &lt;br/&gt; version: v1   author: lain"</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    app.run(host=<span class="string">"0.0.0.0"</span>, port=<span class="number">5000</span>)</div></pre></td></tr></table></figure></p>
+<p>创建requirements.txt:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">flask</div></pre></td></tr></table></figure></p>
+<h3 id="编写Dockerfile"><a href="#编写Dockerfile" class="headerlink" title="编写Dockerfile"></a>编写Dockerfile</h3><p>创建Dockerfile<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">From python:2.7</div><div class="line"></div><div class="line">MAINTAINER lain</div><div class="line"></div><div class="line">ADD . /app</div><div class="line"></div><div class="line">WORKDIR ./app</div><div class="line"></div><div class="line">RUN pip install -r requirements.txt</div><div class="line"></div><div class="line">EXPOSE 5000</div><div class="line"></div><div class="line">CMD [<span class="string">"python"</span>, <span class="string">"/app/hello.py"</span>]</div></pre></td></tr></table></figure></p>
+<h4 id="创建构建部署脚本"><a href="#创建构建部署脚本" class="headerlink" title="创建构建部署脚本"></a>创建构建部署脚本</h4><p>创建build_deploy.sh<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"></div><div class="line"><span class="comment">#build in jenkins</span></div><div class="line"></div><div class="line"><span class="comment"># docker私有仓库的地址</span></div><div class="line">REG_URL=xxxx</div><div class="line"></div><div class="line"><span class="comment"># swarm集群manage节点的地址</span></div><div class="line">SWARM_MANAGE_URL=xx:2376</div><div class="line"></div><div class="line"><span class="comment">#根据时间生成tag</span></div><div class="line">TAG=<span class="variable">$REG_URL</span>/<span class="variable">$JOB_NAME</span>:`date +%y%m%d-%H-%M`</div><div class="line"></div><div class="line"><span class="comment">#使用项目目录下的Dockerfile文件打包 </span></div><div class="line">docker build -t  <span class="variable">$TAG</span>  <span class="variable">$WORKSPACE</span>/.</div><div class="line">docker push   <span class="variable">$TAG</span></div><div class="line">docker rmi <span class="variable">$TAG</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># 检测是否有运行的版本，有就删了</span></div><div class="line"><span class="keyword">if</span> docker -H <span class="variable">$SWARM_MANAGE_URL</span> ps <span class="_">-a</span>| grep -i <span class="variable">$JOB_NAME</span>; <span class="keyword">then</span></div><div class="line">        docker -H <span class="variable">$SWARM_MANAGE_URL</span> rm <span class="_">-f</span>  <span class="variable">$JOB_NAME</span></div><div class="line"><span class="keyword">fi</span></div><div class="line"></div><div class="line"><span class="comment">#在swarm集群运行</span></div><div class="line">docker -H <span class="variable">$SWARM_MANAGE_URL</span> run  <span class="_">-d</span>  -p 80:5000  --name <span class="variable">$JOB_NAME</span>  <span class="variable">$TAG</span></div></pre></td></tr></table></figure></p>
+<h3 id="配置Jenkins"><a href="#配置Jenkins" class="headerlink" title="配置Jenkins"></a>配置Jenkins</h3><p>在Jenkins上创建一个python-hello-world项目，选择自由风格即可：</p>
+<p><img src="/images/1479044880231.jpg" alt="enter description here" title="jenkins新建项目"></p>
+<p>设置git:</p>
+<p><img src="/images/1479045060175.jpg" alt="enter description here" title="jenkins配置git"></p>
+<p>设置构建触发器，这里设置每分钟拉取一次，也可设置gitlab hook：</p>
+<p><img src="/images/1479045355005.jpg" alt="enter description here" title="jenkins配置触发器"></p>
+<p>设置构建需要执行的脚本，这里设置成build_deploy.sh:</p>
+<p><img src="/images/1479045561748.jpg" alt="enter description here" title="jenkins配置执行脚本"></p>
+<h3 id="触发CI、CD"><a href="#触发CI、CD" class="headerlink" title="触发CI、CD"></a>触发CI、CD</h3><p>推送到代码到gitlab的master分支，然后查看jenkins console，就可以查看到构建集成和部署的过程。</p>
+<p><img src="/images/1479089385376.jpg" alt="enter description here" title="jenkins构建日志"></p>
+<h3 id="访问测试"><a href="#访问测试" class="headerlink" title="访问测试"></a>访问测试</h3><p>访问浏览器，已经部署到swarm集群（关于集群的负载均衡，请自行查阅。）</p>
+<p><img src="/images/1479090215977.jpg" alt="enter description here" title="网站页面"></p>
+<p>更新代码版本，并推送到代码仓库gilab：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</div><div class="line"></div><div class="line">app = Flask(__name__)</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@app.route('/')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello_world</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> <span class="string">"Hello World! &lt;br/&gt; version: v2   author: lain"</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    app.run(host=<span class="string">"0.0.0.0"</span>, port=<span class="number">5000</span>)</div></pre></td></tr></table></figure></p>
+<p>等待2分钟，可以在jenkins查看到新的构建是否成功，访问浏览器：</p>
+<p><img src="/images/1479090668198.jpg" alt="enter description here" title="变更后网页信息"></p>
+<h2 id="容器监控"><a href="#容器监控" class="headerlink" title="容器监控"></a>容器监控</h2><p>关于采集容器运行信息数据、查看容器运行情况、日志等，通过命令行的方式是很不方便的，因此我们需要搭建一个容器监控平台，开源的工具有<br>如何管理容器 查看容器运行情况 日志等都不太方便 我们需要搭建一个监控平台cAdvisor等。（这里不再叙述）</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Docker/" rel="tag"># Docker</a>
+          
+            <a href="/tags/Jenkins/" rel="tag"># Jenkins</a>
+          
+            <a href="/tags/Gitlab/" rel="tag"># Gitlab</a>
+          
+            <a href="/tags/Swarm/" rel="tag"># Swarm</a>
+          
+            <a href="/tags/持续集成/" rel="tag"># 持续集成</a>
+          
+            <a href="/tags/持续构建/" rel="tag"># 持续构建</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/07/create-ks3-harbor-registry/" rel="next" title="基于KS3、Harbor搭建企业级的Docker">
+                <i class="fa fa-chevron-left"></i> 基于KS3、Harbor搭建企业级的Docker
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/06/rlcone-guide/" rel="prev" title="Rlcone使用指南">
+                Rlcone使用指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Lain" />
+          <p class="site-author-name" itemprop="name">Lain</p>
+          <p class="site-description motion-element" itemprop="description">藏剑于身 待时而动</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/softlns" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+        
+        <div class="feed-link motion-element">
+        <iframe style="background:transparent !important" scrolling="no" frameborder="0" allowtransparency="true" width="220" height="220" src="//rf.revolvermaps.com/w/6/a/a.php?i=5ayy6umx8je&amp;m=7&amp;s=270&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80"></iframe>
+        </div>
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备"><span class="nav-number">2.</span> <span class="nav-text">准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境"><span class="nav-number">2.1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Docker"><span class="nav-number">2.2.</span> <span class="nav-text">安装Docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装docker-compose"><span class="nav-number">2.3.</span> <span class="nav-text">安装docker-compose</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建基础服务"><span class="nav-number">3.</span> <span class="nav-text">搭建基础服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码仓库（构建Gitlab服务）"><span class="nav-number">3.1.</span> <span class="nav-text">代码仓库（构建Gitlab服务）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Docker-cli启动方式"><span class="nav-number">3.1.1.</span> <span class="nav-text">Docker cli启动方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#docker-compose启动方式"><span class="nav-number">3.1.2.</span> <span class="nav-text">docker-compose启动方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试"><span class="nav-number">3.1.3.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#镜像仓库（构建Docker私有仓库）"><span class="nav-number">3.2.</span> <span class="nav-text">镜像仓库（构建Docker私有仓库）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Docker-cli构建方式"><span class="nav-number">3.2.1.</span> <span class="nav-text">Docker cli构建方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#docker-compose构建方式"><span class="nav-number">3.2.2.</span> <span class="nav-text">docker-compose构建方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试-1"><span class="nav-number">3.2.3.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#镜像构建（搭建Jenkins服务）"><span class="nav-number">3.3.</span> <span class="nav-text">镜像构建（搭建Jenkins服务）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Docker-cli构建方式-1"><span class="nav-number">3.3.1.</span> <span class="nav-text">Docker cli构建方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#docker-compose构建方式-1"><span class="nav-number">3.3.2.</span> <span class="nav-text">docker-compose构建方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试-2"><span class="nav-number">3.3.3.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器集群（构建Docker-Swarm集群）"><span class="nav-number">3.4.</span> <span class="nav-text">容器集群（构建Docker Swarm集群）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Demo-基于Docker构建持续集成（CI）、持续部署（CD）的Flask项目"><span class="nav-number">4.</span> <span class="nav-text">Demo: 基于Docker构建持续集成（CI）、持续部署（CD）的Flask项目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gitlab上新建项目"><span class="nav-number">4.1.</span> <span class="nav-text">gitlab上新建项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#本地开发"><span class="nav-number">4.2.</span> <span class="nav-text">本地开发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#编写Flask应用"><span class="nav-number">4.2.1.</span> <span class="nav-text">编写Flask应用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编写Dockerfile"><span class="nav-number">4.3.</span> <span class="nav-text">编写Dockerfile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建构建部署脚本"><span class="nav-number">4.3.1.</span> <span class="nav-text">创建构建部署脚本</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置Jenkins"><span class="nav-number">4.4.</span> <span class="nav-text">配置Jenkins</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#触发CI、CD"><span class="nav-number">4.5.</span> <span class="nav-text">触发CI、CD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#访问测试"><span class="nav-number">4.6.</span> <span class="nav-text">访问测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器监控"><span class="nav-number">5.</span> <span class="nav-text">容器监控</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lain</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'https://softlns.github.io';
+      var disqus_identifier = '2016/12/06/jenkins-gitlab-docker/';
+
+      var disqus_title = "基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("xUeT8yKduFzhHlntroA20LXf-gzGzoHsz", "eSByTxAGNpd3WWsbNMoTdMnR");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/particle.js"></script>
+  
+    <!-- custom analytics part create by lain -->
+<script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+<script>AV.initialize("xUeT8yKduFzhHlntroA20LXf-gzGzoHsz", "eSByTxAGNpd3WWsbNMoTdMnR");</script>
+<script>
+function showTime(Counter) {
+	var query = new AV.Query(Counter);
+	$(".leancloud_visitors").each(function() {
+		var url = $(this).attr("id").trim();
+		query.equalTo("url", url);
+		query.find({
+			success: function(results) {
+				if (results.length == 0) {
+					var content = $(document.getElementById(url)).text() + ': 0';
+					$(document.getElementById(url)).text(content);
+					return;
+				}
+				for (var i = 0; i < results.length; i++) {
+					var object = results[i];
+					var content = $(document.getElementById(url)).text() + ': ' + object.get('time');
+					$(document.getElementById(url)).text(content);
+				}
+			},
+			error: function(object, error) {
+				console.log("Error: " + error.code + " " + error.message);
+			}
+		});
+	});
+}
+function addCount(Counter) {
+	var Counter = AV.Object.extend("Counter");
+	url = $(".leancloud_visitors").attr('id').trim();
+	title = $(".leancloud_visitors").attr('data-flag-title').trim();
+	var query = new AV.Query(Counter);
+	query.equalTo("url", url);
+	query.find({
+		success: function(results) {
+			if (results.length > 0) {
+				var counter = results[0];
+				counter.fetchWhenSave(true);
+				counter.increment("time");
+				counter.save(null, {
+					success: function(counter) {
+						var content = $(document.getElementById(url)).text() + ': ' + counter.get('time');
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(counter, error) {
+						console.log('Failed to save Visitor num, with error message: ' + error.message);
+					}
+				});
+			} else {
+				var newcounter = new Counter();
+				newcounter.set("title", title);
+				newcounter.set("url", url);
+				newcounter.set("time", 1);
+				newcounter.save(null, {
+					success: function(newcounter) {
+					    console.log("newcounter.get('time')="+newcounter.get('time'));
+						var content = $(document.getElementById(url)).text() + ': ' + newcounter.get('time');
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(newcounter, error) {
+						console.log('Failed to create');
+					}
+				});
+			}
+		},
+		error: function(error) {
+			console.log('Error:' + error.code + " " + error.message);
+		}
+	});
+}
+$(function() {
+	var Counter = AV.Object.extend("Counter");
+	if ($('.leancloud_visitors').length == 1) {
+		addCount(Counter);
+	} else if ($('.post-title-link').length > 1) {
+		showTime(Counter);
+	}
+});
+</script>
+
+  
+</body>
+</html>
