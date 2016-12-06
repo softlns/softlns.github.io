@@ -100,7 +100,7 @@
 <meta property="og:site_name" content="Lain's Blog">
 <meta property="og:description" content="概述KS3（Kingsoft Standard Storage Service）服务是一个对象存储类服务。类似于网盘，可以通过网络随时随地的获取存储数据。金山云为用户管理KS3存储桶提供了两种控制管理方式：金山云的后台Consol、金山云官方KS3的SDK。
 相比于以上两种使用场景，在实际的开发应用中，常常还有这样的场景：把KS3存储桶mount到本地文件系统，使得用户可以像操作文件目录一样操作K">
-<meta property="og:updated_time" content="2016-12-06T10:09:10.725Z">
+<meta property="og:updated_time" content="2016-12-06T11:44:06.989Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="s3fs使用指南">
 <meta name="twitter:description" content="概述KS3（Kingsoft Standard Storage Service）服务是一个对象存储类服务。类似于网盘，可以通过网络随时随地的获取存储数据。金山云为用户管理KS3存储桶提供了两种控制管理方式：金山云的后台Consol、金山云官方KS3的SDK。
@@ -582,7 +582,7 @@
 <li>Q: s3fs如何Debug？<br>您可以使用在挂载时，加上-d -o f2参数，s3fs会把日志写入到系统日志中。在centos系统中，在/var/log/messages中。<br>您也可以在挂载时使用-f -d -o f2参数，s3fs会把日志输出到屏幕上。</li>
 </ul>
 <h3 id="4"><a href="#4" class="headerlink" title="4"></a>4</h3><ul>
-<li>Q: s3fs提示s3fs: unable to access MOUNTPOINT /mnt/ks3: No such file or directory</li>
+<li>Q: s3fs提示s3fs: unable to access MOUNTPOINT /mnt/ks3: No such file or directory<br>这是您未创建该目录导致的，在挂载前需要创建对应目录。</li>
 </ul>
 <h3 id="5"><a href="#5" class="headerlink" title="5"></a>5</h3><ul>
 <li>Q: 如何使用supervisor启动s3fs？</li>
