@@ -1805,7 +1805,7 @@ img:hover {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #f26550;
+  background: #30d6f1;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2329,6 +2329,13 @@ a.search-result {
 .site-pv .busuanzi-value,
 .page-pv .busuanzi-value {
   margin: 0 5px;
+}
+.site-uv {
+  margin-right: 10px;
+}
+.site-uv::after {
+  content: "|";
+  padding-left: 10px;
 }
 .use-motion .post {
   opacity: 0;
