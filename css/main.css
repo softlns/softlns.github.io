@@ -977,6 +977,84 @@ pre .javascript .function {
 .back-to-top.back-to-top-on {
   bottom: 40px;
 }
+.mobile_code {
+  padding: 2px 3px 0 3px;
+}
+@media (max-width: 767px) {
+  .mobile_code {
+    display: none;
+  }
+}
+.mobile_code .code_img {
+  padding: 20px;
+  border: 1px solid #d1d2d6;
+  position: fixed;
+  right: 38px;
+  bottom: 50%;
+  background-color: #fff;
+  display: none;
+  z-index: 1024;
+}
+.mobile_code .code_img img {
+  width: 156px;
+  height: 156px;
+}
+.mobile_code:hover .code_img {
+  display: block;
+}
+.side-buttons {
+  position: fixed;
+  width: 30px;
+  bottom: 50%;
+  right: 0px;
+  z-index: 1000;
+}
+.side-buttons .side-buttons-box {
+  box-sizing: border-box;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 36px;
+  margin-bottom: 1px;
+  background: #ccc;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  opacity: 1;
+  color: #fff;
+  border-radius: 0px;
+  overflow: hidden;
+  line-height: 2;
+}
+.side-buttons .side-buttons-box:hover {
+  background-color: #669fdd;
+}
+.side-buttons-box:hover .bt-left {
+  display: none;
+}
+.side-buttons .side-buttons-box p {
+  color: #333;
+  font-size: 12px;
+  line-height: 12px;
+  margin: 0;
+  padding: 0;
+  padding-top: 5px;
+}
+.mail_box {
+  padding: 1px 3px 0 3px;
+}
+@media (max-width: 767px) {
+  .mail_box {
+    display: none;
+  }
+}
+.mail_box a {
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 0;
+  word-wrap: normal;
+}
 .header {
   background: #fff;
 }
@@ -1727,7 +1805,7 @@ img:hover {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #fff;
+  background: #b46ab3;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2251,13 +2329,6 @@ a.search-result {
 .site-pv .busuanzi-value,
 .page-pv .busuanzi-value {
   margin: 0 5px;
-}
-.site-uv {
-  margin-right: 10px;
-}
-.site-uv::after {
-  content: "|";
-  padding-left: 10px;
 }
 .use-motion .post {
   opacity: 0;
