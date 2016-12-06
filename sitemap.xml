@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://softlns.coding.me/2016/11/28/rclone-guide/</loc>
+    
+    <lastmod>2016-12-06T12:05:04.679Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://softlns.coding.me/2016/11/14/jenkins-gitlab-docker/</loc>
     
     <lastmod>2016-12-06T11:53:02.264Z</lastmod>
@@ -33,13 +40,6 @@
     <loc>https://softlns.coding.me/2014/09/13/go-goroutine/</loc>
     
     <lastmod>2016-12-06T08:29:37.941Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://softlns.coding.me/2016/11/28/rclone-guide/</loc>
-    
-    <lastmod>2016-12-06T08:27:14.104Z</lastmod>
     
   </url>
   

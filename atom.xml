@@ -258,11 +258,11 @@
   </entry>
   
   <entry>
-    <title>RcLone使用指南</title>
+    <title>Rclone使用指南</title>
     <link href="https://softlns.coding.me/2016/11/28/rclone-guide/"/>
     <id>https://softlns.coding.me/2016/11/28/rclone-guide/</id>
     <published>2016-11-28T03:14:40.000Z</published>
-    <updated>2016-12-06T08:27:14.104Z</updated>
+    <updated>2016-12-06T12:05:04.679Z</updated>
     
     <content type="html"><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Rclone是一款的命令行工具，支持在不同对象存储、网盘间同步、上传、下载数据。</p>
 <p>支持的主流对象存储：</p>

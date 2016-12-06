@@ -4,6 +4,32 @@
 
     
   <url>
+    <loc>https://softlns.coding.me/2016/11/28/rclone-guide/</loc>
+    <lastmod>2016-12-06T12:05:04.679Z</lastmod>
+    <data>
+        <display>
+        <title>Rclone使用指南</title>
+        <pubTime>2016-11-28T03:14:40.000Z</pubTime>
+        
+        <tag>KS3</tag>
+         
+        <tag>Rclone</tag>
+         
+        <tag>S3</tag>
+         
+        <tag>共享存储</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术" url="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://softlns.coding.me/2016/11/14/jenkins-gitlab-docker/</loc>
     <lastmod>2016-12-06T11:53:02.264Z</lastmod>
     <data>
@@ -118,32 +144,6 @@
         <tag>goroutine</tag>
          
         <tag>channel</tag>
-         
-         
-           
-             
-              <breadCrumb title="技术" url="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://softlns.coding.me/2016/11/28/rclone-guide/</loc>
-    <lastmod>2016-12-06T08:27:14.104Z</lastmod>
-    <data>
-        <display>
-        <title>RcLone使用指南</title>
-        <pubTime>2016-11-28T03:14:40.000Z</pubTime>
-        
-        <tag>KS3</tag>
-         
-        <tag>Rclone</tag>
-         
-        <tag>S3</tag>
-         
-        <tag>共享存储</tag>
          
          
            
