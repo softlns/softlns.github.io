@@ -4,6 +4,30 @@
 
     
   <url>
+    <loc>https://softlns.github.io/2016/11/07/create-ks3-harbor-registry/</loc>
+    <lastmod>2016-12-06T08:34:19.932Z</lastmod>
+    <data>
+        <display>
+        <title>基于KS3、Harbor搭建企业级的Docker</title>
+        <pubTime>2016-11-07T12:56:14.000Z</pubTime>
+        
+        <tag>Docker</tag>
+         
+        <tag>KS3</tag>
+         
+        <tag>Habor</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://softlns.github.io/2016/10/22/create-kubernetes-cluster/</loc>
     <lastmod>2016-12-06T08:30:19.597Z</lastmod>
     <data>
@@ -59,9 +83,9 @@
         <title>RcLone使用指南</title>
         <pubTime>2016-11-28T03:14:40.000Z</pubTime>
         
-        <tag>KS3</tag>
-         
         <tag>Rclone</tag>
+         
+        <tag>KS3</tag>
          
         <tag>S3</tag>
          
@@ -126,27 +150,6 @@
              
               <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://softlns.github.io/2016/11/07/create-ks3-harbor-registry/</loc>
-    <lastmod>2016-12-06T03:12:08.179Z</lastmod>
-    <data>
-        <display>
-        <title>基于KS3、Harbor搭建企业级的Docker</title>
-        <pubTime>2016-11-07T12:56:14.000Z</pubTime>
-        
-        <tag>KS3</tag>
-         
-        <tag>Docker</tag>
-         
-        <tag>Habor</tag>
-         
-         
-           
         </display>
     </data>
     </url>

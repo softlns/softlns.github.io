@@ -335,9 +335,9 @@
       <category term="技术" scheme="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="KS3" scheme="https://softlns.github.io/tags/KS3/"/>
-    
       <category term="Rclone" scheme="https://softlns.github.io/tags/Rclone/"/>
+    
+      <category term="KS3" scheme="https://softlns.github.io/tags/KS3/"/>
     
       <category term="S3" scheme="https://softlns.github.io/tags/S3/"/>
     
@@ -479,7 +479,7 @@
     <link href="https://softlns.github.io/2016/11/07/create-ks3-harbor-registry/"/>
     <id>https://softlns.github.io/2016/11/07/create-ks3-harbor-registry/</id>
     <published>2016-11-07T12:56:14.000Z</published>
-    <updated>2016-12-06T03:12:08.179Z</updated>
+    <updated>2016-12-06T08:34:19.932Z</updated>
     
     <content type="html"><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Harbor 是 VMware 中国开发的一款 Docker Registry 工具，其主要致力于企业级的 Registry 管理，并提供了 LDAP 等高级权限认证功能。</p>
 <p>KS3（Kingsoft Standard Storage Service）是金山云为企业用户提供的无限制、多备份、分布式的低成本存储空间服务，解决存储扩容、数据可靠安全以及分布式访问等相关复杂问题。</p>
@@ -552,10 +552,12 @@
     
     </summary>
     
+      <category term="技术" scheme="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
     
-      <category term="KS3" scheme="https://softlns.github.io/tags/KS3/"/>
     
       <category term="Docker" scheme="https://softlns.github.io/tags/Docker/"/>
+    
+      <category term="KS3" scheme="https://softlns.github.io/tags/KS3/"/>
     
       <category term="Habor" scheme="https://softlns.github.io/tags/Habor/"/>
     

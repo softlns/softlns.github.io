@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://softlns.github.io/2016/11/07/create-ks3-harbor-registry/</loc>
+    
+    <lastmod>2016-12-06T08:34:19.932Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://softlns.github.io/2016/10/22/create-kubernetes-cluster/</loc>
     
     <lastmod>2016-12-06T08:30:19.597Z</lastmod>
@@ -33,13 +40,6 @@
     <loc>https://softlns.github.io/2016/12/06/s3fs-guide/</loc>
     
     <lastmod>2016-12-06T03:22:48.245Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://softlns.github.io/2016/11/07/create-ks3-harbor-registry/</loc>
-    
-    <lastmod>2016-12-06T03:12:08.179Z</lastmod>
     
   </url>
   
