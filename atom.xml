@@ -873,7 +873,7 @@ Linux
     <link href="https://softlns.github.io/2014/12/14/search-engine-research/"/>
     <id>https://softlns.github.io/2014/12/14/search-engine-research/</id>
     <published>2014-12-14T04:52:12.000Z</published>
-    <updated>2016-12-14T05:16:31.471Z</updated>
+    <updated>2016-12-14T05:20:30.521Z</updated>
     
     <content type="html"><![CDATA[<h2 id="ElasticSeach"><a href="#ElasticSeach" class="headerlink" title="ElasticSeach"></a>ElasticSeach</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>ElasticSearch是一个实时的分布式搜索和分析引擎。它可以帮助你用前所未有的速度去处理大规模数据。<br>它可以用于全文搜索，结构化搜索以及分析，当然你也可以将这三者进行组合。<br>ElasticSearch是一个建立在全文搜索引擎Apache Lucene™基础上的搜索引擎，可以说Lucene是当今最先进，最高效的全功能开源搜索引擎框架。<br>但是Lucene只是一个框架，要充分利用它的功能，需要使用Java，并且在程序中集成Lucene。需要很多的学习了解，才能明白它是如何运行的，Lucene确实非常复杂。<br>Elasticsearch使用Lucene作为内部引擎，但是在使用它做全文搜索时，只需要使用统一开发好的API即可，而不需要了解其背后复杂的Lucene的运行原理。<br>当然Elasticsearch并不仅仅是Lucene这么简单，它不但包括了全文搜索功能，还可以进行以下工作：</p>
 <ul>
@@ -881,6 +881,7 @@ Linux
 <li>实时分析的分布式搜索引擎。</li>
 <li>可以拓展到上百台服务器，处理PB级别的结构化或非结构化数据。</li>
 </ul>
+<a id="more"></a>
 <p>这么多的功能被集成到一台服务器上，你可以轻松地通过客户端或者任何你喜欢的程序语言与ES的RESTful API进行交流。<br>Elasticsearch的上手是非常简单的。它附带了很多非常合理的默认值，这让初学者很好地避免一上手就要面对复杂的理论，它安装好就可以使用了，用很小的学习成本就可以变得很有生产力。<br>随着越学越深入，还可以利用Elasticsearch更多高级的功能，整个引擎可以很灵活地进行配置。可以根据自身需求来定制属于自己的Elasticsearch。<br>使用案例：</p>
 <ul>
 <li>维基百科使用Elasticsearch来进行全文搜索做高亮显示关键词，以及提供search-as-you-type、did-you-mean等搜索建议功能。</li>
@@ -950,7 +951,12 @@ Linux
     
     <summary type="html">
     
-      &lt;h2 id=&quot;ElasticSeach&quot;&gt;&lt;a href=&quot;#ElasticSeach&quot; class=&quot;headerlink&quot; title=&quot;ElasticSeach&quot;&gt;&lt;/a&gt;ElasticSeach&lt;/h2&gt;&lt;h3 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;
+      &lt;h2 id=&quot;ElasticSeach&quot;&gt;&lt;a href=&quot;#ElasticSeach&quot; class=&quot;headerlink&quot; title=&quot;ElasticSeach&quot;&gt;&lt;/a&gt;ElasticSeach&lt;/h2&gt;&lt;h3 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h3&gt;&lt;p&gt;ElasticSearch是一个实时的分布式搜索和分析引擎。它可以帮助你用前所未有的速度去处理大规模数据。&lt;br&gt;它可以用于全文搜索，结构化搜索以及分析，当然你也可以将这三者进行组合。&lt;br&gt;ElasticSearch是一个建立在全文搜索引擎Apache Lucene™基础上的搜索引擎，可以说Lucene是当今最先进，最高效的全功能开源搜索引擎框架。&lt;br&gt;但是Lucene只是一个框架，要充分利用它的功能，需要使用Java，并且在程序中集成Lucene。需要很多的学习了解，才能明白它是如何运行的，Lucene确实非常复杂。&lt;br&gt;Elasticsearch使用Lucene作为内部引擎，但是在使用它做全文搜索时，只需要使用统一开发好的API即可，而不需要了解其背后复杂的Lucene的运行原理。&lt;br&gt;当然Elasticsearch并不仅仅是Lucene这么简单，它不但包括了全文搜索功能，还可以进行以下工作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;分布式实时文件存储，并将每一个字段都编入索引，使其可以被搜索。&lt;/li&gt;
+&lt;li&gt;实时分析的分布式搜索引擎。&lt;/li&gt;
+&lt;li&gt;可以拓展到上百台服务器，处理PB级别的结构化或非结构化数据。&lt;/li&gt;
+&lt;/ul&gt;
     
     </summary>
     
