@@ -95,24 +95,24 @@
 <meta name="description" content="概述基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群">
-<meta property="og:url" content="https://softlns.coding.me/2016/11/14/jenkins-gitlab-docker/index.html">
+<meta property="og:url" content="https://softlns.github.io/2016/11/14/jenkins-gitlab-docker/index.html">
 <meta property="og:site_name" content="Lain's Blog">
 <meta property="og:description" content="概述基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群。">
-<meta property="og:image" content="https://softlns.coding.me/images/1478836346389.jpg">
-<meta property="og:image" content="https://softlns.coding.me/images/1478851124897.jpg">
-<meta property="og:image" content="https://softlns.coding.me/images/1478853924711.jpg">
-<meta property="og:image" content="https://softlns.coding.me/images/1479044880231.jpg">
-<meta property="og:image" content="https://softlns.coding.me/images/1479045060175.jpg">
-<meta property="og:image" content="https://softlns.coding.me/images/1479045355005.jpg">
-<meta property="og:image" content="https://softlns.coding.me/images/1479045561748.jpg">
-<meta property="og:image" content="https://softlns.coding.me/images/1479089385376.jpg">
-<meta property="og:image" content="https://softlns.coding.me/images/1479090215977.jpg">
-<meta property="og:image" content="https://softlns.coding.me/images/1479090668198.jpg">
-<meta property="og:updated_time" content="2016-12-07T04:08:56.237Z">
+<meta property="og:image" content="https://softlns.github.io/images/1478836346389.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1478851124897.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1478853924711.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479044880231.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479045060175.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479045355005.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479045561748.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479089385376.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479090215977.jpg">
+<meta property="og:image" content="https://softlns.github.io/images/1479090668198.jpg">
+<meta property="og:updated_time" content="2016-12-14T05:17:59.416Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群">
 <meta name="twitter:description" content="概述基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群。">
-<meta name="twitter:image" content="https://softlns.coding.me/images/1478836346389.jpg">
+<meta name="twitter:image" content="https://softlns.github.io/images/1478836346389.jpg">
 
 
 
@@ -140,7 +140,7 @@
 
 
 
-  <link rel="canonical" href="https://softlns.coding.me/2016/11/14/jenkins-gitlab-docker/"/>
+  <link rel="canonical" href="https://softlns.github.io/2016/11/14/jenkins-gitlab-docker/"/>
 
 
 
@@ -290,7 +290,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://softlns.coding.me/2016/11/14/jenkins-gitlab-docker/">
+  <link itemprop="mainEntityOfPage" href="https://softlns.github.io/2016/11/14/jenkins-gitlab-docker/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Lain">
@@ -445,7 +445,7 @@
 <li>测试推送/拉取 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker pull 		镜像仓库ip:端口/&lt;命名空间&gt;/项目名称	<span class="comment">#  拉取镜像</span></div><div class="line">docker push       镜像仓库ip:端口/&lt;命名空间&gt;/项目名称	  <span class="comment"># 推送镜像</span></div></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>注：docker私有镜像仓库 拉取/推送 失败，提示不能使用http连接。解决方法：<br>1、设置https访问，参见<a href="https://softlns.coding.me/2016/11/07/create-ks3-harbor-registry/#more">企业级的Docker Registry搭建</a>。<br>2、在docker启动参数里添加–insecure-registry \<your registry="" host\="">:\<port\>，然后重启docker。</port\></your></p>
+<p>注：docker私有镜像仓库 拉取/推送 失败，提示不能使用http连接。解决方法：<br>1、设置https访问，参见<a href="https://softlns.github.io/2016/11/07/create-ks3-harbor-registry/#more">企业级的Docker Registry搭建</a>。<br>2、在docker启动参数里添加–insecure-registry \<your registry="" host\="">:\<port\>，然后重启docker。</port\></your></p>
 <h3 id="镜像构建（搭建Jenkins服务）"><a href="#镜像构建（搭建Jenkins服务）" class="headerlink" title="镜像构建（搭建Jenkins服务）"></a>镜像构建（搭建Jenkins服务）</h3><p>Jenkins是基于Java开发的一种开源持续集成工具，监控并触发持续重复的工作，具有开源，支持多平台和插件扩展，安装简单，界面化管理等特点。Jenkins使用job来描述每一步工作，节点是用来执行项目的环境。Master节点是Jenkins job的默认执行环境，也是Jenkins应用本身的安装环境<br>使用官方的Jenkins镜像来构建我们的Jenkins服务。</p>
 <h4 id="Docker-cli构建方式-1"><a href="#Docker-cli构建方式-1" class="headerlink" title="Docker cli构建方式"></a>Docker cli构建方式</h4><p>执行以下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">docker run  docker run  <span class="_">-d</span>  -p 8080:8080 \</div><div class="line">--name jenkins  --restart=always -v /mnt/jenkins_home:/var/jenkins_home \</div><div class="line">-v /var/run/docker.sock:/var/run/docker.sock   jayqqaa12/jenkins</div></pre></td></tr></table></figure></p>
 <p>参数说明：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-v /mnt/jenkins_home:/var/jenkins_home   <span class="comment"># 映射volumes到本地存储</span></div><div class="line">-v /var/run/docker.sock:/var/run/docker.sock  <span class="comment"># 映射主机的docker到容器里面 这样在容器里面就可以使用主机安装的 docker 了</span></div></pre></td></tr></table></figure></p>
@@ -566,7 +566,7 @@
         <div class="ds-share flat" data-thread-key="2016/11/14/jenkins-gitlab-docker/"
      data-title="基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群"
      data-content=""
-     data-url="https://softlns.coding.me/2016/11/14/jenkins-gitlab-docker/">
+     data-url="https://softlns.github.io/2016/11/14/jenkins-gitlab-docker/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -594,7 +594,7 @@
   <div class="comments" id="comments">
     
       <div class="ds-thread" data-thread-key="2016/11/14/jenkins-gitlab-docker/"
-           data-title="基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群" data-url="https://softlns.coding.me/2016/11/14/jenkins-gitlab-docker/">
+           data-title="基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群" data-url="https://softlns.github.io/2016/11/14/jenkins-gitlab-docker/">
       </div>
     
   </div>

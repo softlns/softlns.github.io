@@ -2,84 +2,84 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://softlns.coding.me/2014/12/14/search-engine-research/</loc>
+    <loc>https://softlns.github.io/2016/11/14/jenkins-gitlab-docker/</loc>
+    
+    <lastmod>2016-12-14T05:17:59.416Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://softlns.github.io/2014/12/14/search-engine-research/</loc>
     
     <lastmod>2016-12-14T05:16:31.471Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://softlns.coding.me/2016/11/14/jenkins-gitlab-docker/</loc>
-    
-    <lastmod>2016-12-07T04:08:56.237Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://softlns.coding.me/2016/11/28/rclone-guide/</loc>
+    <loc>https://softlns.github.io/2016/11/28/rclone-guide/</loc>
     
     <lastmod>2016-12-06T12:05:04.679Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://softlns.coding.me/2016/12/06/s3fs-guide/</loc>
+    <loc>https://softlns.github.io/2016/12/06/s3fs-guide/</loc>
     
     <lastmod>2016-12-06T11:44:06.989Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://softlns.coding.me/2016/11/07/create-ks3-harbor-registry/</loc>
+    <loc>https://softlns.github.io/2016/11/07/create-ks3-harbor-registry/</loc>
     
     <lastmod>2016-12-06T08:34:19.932Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://softlns.coding.me/2016/10/22/create-kubernetes-cluster/</loc>
+    <loc>https://softlns.github.io/2016/10/22/create-kubernetes-cluster/</loc>
     
     <lastmod>2016-12-06T08:30:19.597Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://softlns.coding.me/2014/09/13/go-goroutine/</loc>
+    <loc>https://softlns.github.io/2014/09/13/go-goroutine/</loc>
     
     <lastmod>2016-12-06T08:29:37.941Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://softlns.coding.me/2015/11/28/python-gevent/</loc>
+    <loc>https://softlns.github.io/2015/11/28/python-gevent/</loc>
     
     <lastmod>2016-12-05T09:46:53.259Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://softlns.coding.me/2014/10/26/unmount-not-found/</loc>
+    <loc>https://softlns.github.io/2014/10/26/unmount-not-found/</loc>
     
     <lastmod>2016-12-05T09:41:49.389Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://softlns.coding.me/board/index.html</loc>
+    <loc>https://softlns.github.io/board/index.html</loc>
     
     <lastmod>2016-12-05T08:46:05.180Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://softlns.coding.me/catagories/index.html</loc>
+    <loc>https://softlns.github.io/catagories/index.html</loc>
     
     <lastmod>2016-12-05T03:27:04.166Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://softlns.coding.me/tags/index.html</loc>
+    <loc>https://softlns.github.io/tags/index.html</loc>
     
     <lastmod>2016-12-05T03:24:56.250Z</lastmod>
     

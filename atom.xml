@@ -4,9 +4,9 @@
   <subtitle>藏剑于身 待时而动</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="https://softlns.coding.me/"/>
+  <link href="https://softlns.github.io/"/>
   <updated>2016-12-06T11:44:06.989Z</updated>
-  <id>https://softlns.coding.me/</id>
+  <id>https://softlns.github.io/</id>
   
   <author>
     <name>Lain</name>
@@ -17,8 +17,8 @@
   
   <entry>
     <title>s3fs使用指南</title>
-    <link href="https://softlns.coding.me/2016/12/06/s3fs-guide/"/>
-    <id>https://softlns.coding.me/2016/12/06/s3fs-guide/</id>
+    <link href="https://softlns.github.io/2016/12/06/s3fs-guide/"/>
+    <id>https://softlns.github.io/2016/12/06/s3fs-guide/</id>
     <published>2016-12-06T03:20:12.000Z</published>
     <updated>2016-12-06T11:44:06.989Z</updated>
     
@@ -246,21 +246,21 @@
     
     </summary>
     
-      <category term="技术" scheme="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+      <category term="技术" scheme="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="KS3" scheme="https://softlns.coding.me/tags/KS3/"/>
+      <category term="KS3" scheme="https://softlns.github.io/tags/KS3/"/>
     
-      <category term="S3FS-Fuse" scheme="https://softlns.coding.me/tags/S3FS-Fuse/"/>
+      <category term="S3FS-Fuse" scheme="https://softlns.github.io/tags/S3FS-Fuse/"/>
     
-      <category term="数据迁移" scheme="https://softlns.coding.me/tags/%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB/"/>
+      <category term="数据迁移" scheme="https://softlns.github.io/tags/%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB/"/>
     
   </entry>
   
   <entry>
     <title>Rclone使用指南</title>
-    <link href="https://softlns.coding.me/2016/11/28/rclone-guide/"/>
-    <id>https://softlns.coding.me/2016/11/28/rclone-guide/</id>
+    <link href="https://softlns.github.io/2016/11/28/rclone-guide/"/>
+    <id>https://softlns.github.io/2016/11/28/rclone-guide/</id>
     <published>2016-11-28T03:14:40.000Z</published>
     <updated>2016-12-06T12:05:04.679Z</updated>
     
@@ -338,25 +338,25 @@
     
     </summary>
     
-      <category term="技术" scheme="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+      <category term="技术" scheme="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="KS3" scheme="https://softlns.coding.me/tags/KS3/"/>
+      <category term="KS3" scheme="https://softlns.github.io/tags/KS3/"/>
     
-      <category term="Rclone" scheme="https://softlns.coding.me/tags/Rclone/"/>
+      <category term="Rclone" scheme="https://softlns.github.io/tags/Rclone/"/>
     
-      <category term="S3" scheme="https://softlns.coding.me/tags/S3/"/>
+      <category term="S3" scheme="https://softlns.github.io/tags/S3/"/>
     
-      <category term="共享存储" scheme="https://softlns.coding.me/tags/%E5%85%B1%E4%BA%AB%E5%AD%98%E5%82%A8/"/>
+      <category term="共享存储" scheme="https://softlns.github.io/tags/%E5%85%B1%E4%BA%AB%E5%AD%98%E5%82%A8/"/>
     
   </entry>
   
   <entry>
     <title>基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群</title>
-    <link href="https://softlns.coding.me/2016/11/14/jenkins-gitlab-docker/"/>
-    <id>https://softlns.coding.me/2016/11/14/jenkins-gitlab-docker/</id>
+    <link href="https://softlns.github.io/2016/11/14/jenkins-gitlab-docker/"/>
+    <id>https://softlns.github.io/2016/11/14/jenkins-gitlab-docker/</id>
     <published>2016-11-14T03:04:54.000Z</published>
-    <updated>2016-12-07T04:08:56.237Z</updated>
+    <updated>2016-12-14T05:17:59.416Z</updated>
     
     <content type="html"><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群。</p>
 <a id="more"></a>
@@ -406,7 +406,7 @@
 <li>测试推送/拉取 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker pull 		镜像仓库ip:端口/&lt;命名空间&gt;/项目名称	<span class="comment">#  拉取镜像</span></div><div class="line">docker push       镜像仓库ip:端口/&lt;命名空间&gt;/项目名称	  <span class="comment"># 推送镜像</span></div></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>注：docker私有镜像仓库 拉取/推送 失败，提示不能使用http连接。解决方法：<br>1、设置https访问，参见<a href="https://softlns.coding.me/2016/11/07/create-ks3-harbor-registry/#more">企业级的Docker Registry搭建</a>。<br>2、在docker启动参数里添加–insecure-registry \<your registry="" host\="">:\<port\>，然后重启docker。</port\></your></p>
+<p>注：docker私有镜像仓库 拉取/推送 失败，提示不能使用http连接。解决方法：<br>1、设置https访问，参见<a href="https://softlns.github.io/2016/11/07/create-ks3-harbor-registry/#more">企业级的Docker Registry搭建</a>。<br>2、在docker启动参数里添加–insecure-registry \<your registry="" host\="">:\<port\>，然后重启docker。</port\></your></p>
 <h3 id="镜像构建（搭建Jenkins服务）"><a href="#镜像构建（搭建Jenkins服务）" class="headerlink" title="镜像构建（搭建Jenkins服务）"></a>镜像构建（搭建Jenkins服务）</h3><p>Jenkins是基于Java开发的一种开源持续集成工具，监控并触发持续重复的工作，具有开源，支持多平台和插件扩展，安装简单，界面化管理等特点。Jenkins使用job来描述每一步工作，节点是用来执行项目的环境。Master节点是Jenkins job的默认执行环境，也是Jenkins应用本身的安装环境<br>使用官方的Jenkins镜像来构建我们的Jenkins服务。</p>
 <h4 id="Docker-cli构建方式-1"><a href="#Docker-cli构建方式-1" class="headerlink" title="Docker cli构建方式"></a>Docker cli构建方式</h4><p>执行以下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">docker run  docker run  <span class="_">-d</span>  -p 8080:8080 \</div><div class="line">--name jenkins  --restart=always -v /mnt/jenkins_home:/var/jenkins_home \</div><div class="line">-v /var/run/docker.sock:/var/run/docker.sock   jayqqaa12/jenkins</div></pre></td></tr></table></figure></p>
 <p>参数说明：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-v /mnt/jenkins_home:/var/jenkins_home   <span class="comment"># 映射volumes到本地存储</span></div><div class="line">-v /var/run/docker.sock:/var/run/docker.sock  <span class="comment"># 映射主机的docker到容器里面 这样在容器里面就可以使用主机安装的 docker 了</span></div></pre></td></tr></table></figure></p>
@@ -463,27 +463,27 @@
     
     </summary>
     
-      <category term="技术" scheme="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+      <category term="技术" scheme="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="Docker" scheme="https://softlns.coding.me/tags/Docker/"/>
+      <category term="Docker" scheme="https://softlns.github.io/tags/Docker/"/>
     
-      <category term="Jenkins" scheme="https://softlns.coding.me/tags/Jenkins/"/>
+      <category term="Jenkins" scheme="https://softlns.github.io/tags/Jenkins/"/>
     
-      <category term="Gitlab" scheme="https://softlns.coding.me/tags/Gitlab/"/>
+      <category term="Gitlab" scheme="https://softlns.github.io/tags/Gitlab/"/>
     
-      <category term="Swarm" scheme="https://softlns.coding.me/tags/Swarm/"/>
+      <category term="Swarm" scheme="https://softlns.github.io/tags/Swarm/"/>
     
-      <category term="持续集成" scheme="https://softlns.coding.me/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"/>
+      <category term="持续集成" scheme="https://softlns.github.io/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"/>
     
-      <category term="持续构建" scheme="https://softlns.coding.me/tags/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA/"/>
+      <category term="持续构建" scheme="https://softlns.github.io/tags/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA/"/>
     
   </entry>
   
   <entry>
     <title>基于KS3、Harbor搭建企业级的Docker</title>
-    <link href="https://softlns.coding.me/2016/11/07/create-ks3-harbor-registry/"/>
-    <id>https://softlns.coding.me/2016/11/07/create-ks3-harbor-registry/</id>
+    <link href="https://softlns.github.io/2016/11/07/create-ks3-harbor-registry/"/>
+    <id>https://softlns.github.io/2016/11/07/create-ks3-harbor-registry/</id>
     <published>2016-11-07T12:56:14.000Z</published>
     <updated>2016-12-06T08:34:19.932Z</updated>
     
@@ -558,21 +558,21 @@
     
     </summary>
     
-      <category term="技术" scheme="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+      <category term="技术" scheme="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="KS3" scheme="https://softlns.coding.me/tags/KS3/"/>
+      <category term="KS3" scheme="https://softlns.github.io/tags/KS3/"/>
     
-      <category term="Docker" scheme="https://softlns.coding.me/tags/Docker/"/>
+      <category term="Docker" scheme="https://softlns.github.io/tags/Docker/"/>
     
-      <category term="Habor" scheme="https://softlns.coding.me/tags/Habor/"/>
+      <category term="Habor" scheme="https://softlns.github.io/tags/Habor/"/>
     
   </entry>
   
   <entry>
     <title>搭建Kubernetes1.4集群</title>
-    <link href="https://softlns.coding.me/2016/10/22/create-kubernetes-cluster/"/>
-    <id>https://softlns.coding.me/2016/10/22/create-kubernetes-cluster/</id>
+    <link href="https://softlns.github.io/2016/10/22/create-kubernetes-cluster/"/>
+    <id>https://softlns.github.io/2016/10/22/create-kubernetes-cluster/</id>
     <published>2016-10-22T12:48:31.000Z</published>
     <updated>2016-12-06T08:30:19.597Z</updated>
     
@@ -625,21 +625,21 @@
     
     </summary>
     
-      <category term="技术" scheme="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+      <category term="技术" scheme="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="Docker" scheme="https://softlns.coding.me/tags/Docker/"/>
+      <category term="Docker" scheme="https://softlns.github.io/tags/Docker/"/>
     
-      <category term="Kubernetes" scheme="https://softlns.coding.me/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://softlns.github.io/tags/Kubernetes/"/>
     
-      <category term="Cluster" scheme="https://softlns.coding.me/tags/Cluster/"/>
+      <category term="Cluster" scheme="https://softlns.github.io/tags/Cluster/"/>
     
   </entry>
   
   <entry>
     <title>Gevent简明教程</title>
-    <link href="https://softlns.coding.me/2015/11/28/python-gevent/"/>
-    <id>https://softlns.coding.me/2015/11/28/python-gevent/</id>
+    <link href="https://softlns.github.io/2015/11/28/python-gevent/"/>
+    <id>https://softlns.github.io/2015/11/28/python-gevent/</id>
     <published>2015-11-28T12:42:34.000Z</published>
     <updated>2016-12-05T09:46:53.259Z</updated>
     
@@ -857,21 +857,21 @@ Linux
     
     </summary>
     
-      <category term="技术" scheme="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+      <category term="技术" scheme="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="python" scheme="https://softlns.coding.me/tags/python/"/>
+      <category term="python" scheme="https://softlns.github.io/tags/python/"/>
     
-      <category term="Gevent" scheme="https://softlns.coding.me/tags/Gevent/"/>
+      <category term="Gevent" scheme="https://softlns.github.io/tags/Gevent/"/>
     
-      <category term="协程" scheme="https://softlns.coding.me/tags/%E5%8D%8F%E7%A8%8B/"/>
+      <category term="协程" scheme="https://softlns.github.io/tags/%E5%8D%8F%E7%A8%8B/"/>
     
   </entry>
   
   <entry>
     <title>搜索引擎调研</title>
-    <link href="https://softlns.coding.me/2014/12/14/search-engine-research/"/>
-    <id>https://softlns.coding.me/2014/12/14/search-engine-research/</id>
+    <link href="https://softlns.github.io/2014/12/14/search-engine-research/"/>
+    <id>https://softlns.github.io/2014/12/14/search-engine-research/</id>
     <published>2014-12-14T04:52:12.000Z</published>
     <updated>2016-12-14T05:16:31.471Z</updated>
     
@@ -954,25 +954,25 @@ Linux
     
     </summary>
     
-      <category term="技术" scheme="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+      <category term="技术" scheme="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="Elasticsearch" scheme="https://softlns.coding.me/tags/Elasticsearch/"/>
+      <category term="Elasticsearch" scheme="https://softlns.github.io/tags/Elasticsearch/"/>
     
-      <category term="Solr" scheme="https://softlns.coding.me/tags/Solr/"/>
+      <category term="Solr" scheme="https://softlns.github.io/tags/Solr/"/>
     
-      <category term="Lucene" scheme="https://softlns.coding.me/tags/Lucene/"/>
+      <category term="Lucene" scheme="https://softlns.github.io/tags/Lucene/"/>
     
-      <category term="搜索引擎" scheme="https://softlns.coding.me/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/"/>
+      <category term="搜索引擎" scheme="https://softlns.github.io/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/"/>
     
-      <category term="分布式" scheme="https://softlns.coding.me/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+      <category term="分布式" scheme="https://softlns.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
     
   </entry>
   
   <entry>
     <title>Ubuntu--&amp;quot;unmount:command not found&amp;quot;的解决方法</title>
-    <link href="https://softlns.coding.me/2014/10/26/unmount-not-found/"/>
-    <id>https://softlns.coding.me/2014/10/26/unmount-not-found/</id>
+    <link href="https://softlns.github.io/2014/10/26/unmount-not-found/"/>
+    <id>https://softlns.github.io/2014/10/26/unmount-not-found/</id>
     <published>2014-10-26T09:22:02.000Z</published>
     <updated>2016-12-05T09:41:49.389Z</updated>
     
@@ -995,21 +995,21 @@ Linux
     
     </summary>
     
-      <category term="技术" scheme="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+      <category term="技术" scheme="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="linux" scheme="https://softlns.coding.me/tags/linux/"/>
+      <category term="linux" scheme="https://softlns.github.io/tags/linux/"/>
     
-      <category term="ubuntu" scheme="https://softlns.coding.me/tags/ubuntu/"/>
+      <category term="ubuntu" scheme="https://softlns.github.io/tags/ubuntu/"/>
     
-      <category term="shell" scheme="https://softlns.coding.me/tags/shell/"/>
+      <category term="shell" scheme="https://softlns.github.io/tags/shell/"/>
     
   </entry>
   
   <entry>
     <title>Go语言--并发篇</title>
-    <link href="https://softlns.coding.me/2014/09/13/go-goroutine/"/>
-    <id>https://softlns.coding.me/2014/09/13/go-goroutine/</id>
+    <link href="https://softlns.github.io/2014/09/13/go-goroutine/"/>
+    <id>https://softlns.github.io/2014/09/13/go-goroutine/</id>
     <published>2014-09-13T08:54:45.000Z</published>
     <updated>2016-12-06T08:29:37.941Z</updated>
     
@@ -1458,14 +1458,14 @@ func main() {
     
     </summary>
     
-      <category term="技术" scheme="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+      <category term="技术" scheme="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="golang" scheme="https://softlns.coding.me/tags/golang/"/>
+      <category term="golang" scheme="https://softlns.github.io/tags/golang/"/>
     
-      <category term="goroutine" scheme="https://softlns.coding.me/tags/goroutine/"/>
+      <category term="goroutine" scheme="https://softlns.github.io/tags/goroutine/"/>
     
-      <category term="channel" scheme="https://softlns.coding.me/tags/channel/"/>
+      <category term="channel" scheme="https://softlns.github.io/tags/channel/"/>
     
   </entry>
   
