@@ -4,28 +4,8 @@
 
     
   <url>
-    <loc>https://softlns.coding.me/2014/12/15/elasticsearch-config-optimize/</loc>
-    <lastmod>2016-12-15T08:25:24.142Z</lastmod>
-    <data>
-        <display>
-        <title>Elasticsearch配置及优化</title>
-        <pubTime>2014-12-15T08:20:03.000Z</pubTime>
-        
-        <tag>elasticsearch</tag>
-         
-         
-           
-             
-              <breadCrumb title="技术" url="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://softlns.coding.me/2016/11/14/jenkins-gitlab-docker/</loc>
-    <lastmod>2016-12-14T05:22:17.932Z</lastmod>
+    <loc>https://softlns.github.io/2016/11/14/jenkins-gitlab-docker/</loc>
+    <lastmod>2016-12-15T08:27:12.176Z</lastmod>
     <data>
         <display>
         <title>基于Jenkins、Gitlab构建持续集成、持续交付的Docker容器集群</title>
@@ -46,7 +26,7 @@
          
            
              
-              <breadCrumb title="技术" url="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
           
         </display>
     </data>
@@ -54,7 +34,27 @@
 
     
   <url>
-    <loc>https://softlns.coding.me/2014/12/14/search-engine-research/</loc>
+    <loc>https://softlns.github.io/2014/12/15/elasticsearch-config-optimize/</loc>
+    <lastmod>2016-12-15T08:25:24.142Z</lastmod>
+    <data>
+        <display>
+        <title>Elasticsearch配置及优化</title>
+        <pubTime>2014-12-15T08:20:03.000Z</pubTime>
+        
+        <tag>elasticsearch</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://softlns.github.io/2014/12/14/search-engine-research/</loc>
     <lastmod>2016-12-14T05:20:30.521Z</lastmod>
     <data>
         <display>
@@ -74,7 +74,7 @@
          
            
              
-              <breadCrumb title="技术" url="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
           
         </display>
     </data>
@@ -82,7 +82,7 @@
 
     
   <url>
-    <loc>https://softlns.coding.me/2016/11/28/rclone-guide/</loc>
+    <loc>https://softlns.github.io/2016/11/28/rclone-guide/</loc>
     <lastmod>2016-12-06T12:05:04.679Z</lastmod>
     <data>
         <display>
@@ -100,7 +100,7 @@
          
            
              
-              <breadCrumb title="技术" url="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
           
         </display>
     </data>
@@ -108,7 +108,7 @@
 
     
   <url>
-    <loc>https://softlns.coding.me/2016/12/06/s3fs-guide/</loc>
+    <loc>https://softlns.github.io/2016/12/06/s3fs-guide/</loc>
     <lastmod>2016-12-06T11:44:06.989Z</lastmod>
     <data>
         <display>
@@ -124,7 +124,7 @@
          
            
              
-              <breadCrumb title="技术" url="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
           
         </display>
     </data>
@@ -132,7 +132,7 @@
 
     
   <url>
-    <loc>https://softlns.coding.me/2016/11/07/create-ks3-harbor-registry/</loc>
+    <loc>https://softlns.github.io/2016/11/07/create-ks3-harbor-registry/</loc>
     <lastmod>2016-12-06T08:34:19.932Z</lastmod>
     <data>
         <display>
@@ -148,7 +148,7 @@
          
            
              
-              <breadCrumb title="技术" url="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
           
         </display>
     </data>
@@ -156,7 +156,7 @@
 
     
   <url>
-    <loc>https://softlns.coding.me/2016/10/22/create-kubernetes-cluster/</loc>
+    <loc>https://softlns.github.io/2016/10/22/create-kubernetes-cluster/</loc>
     <lastmod>2016-12-06T08:30:19.597Z</lastmod>
     <data>
         <display>
@@ -172,7 +172,7 @@
          
            
              
-              <breadCrumb title="技术" url="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
           
         </display>
     </data>
@@ -180,7 +180,7 @@
 
     
   <url>
-    <loc>https://softlns.coding.me/2014/09/13/go-goroutine/</loc>
+    <loc>https://softlns.github.io/2014/09/13/go-goroutine/</loc>
     <lastmod>2016-12-06T08:29:37.941Z</lastmod>
     <data>
         <display>
@@ -196,7 +196,7 @@
          
            
              
-              <breadCrumb title="技术" url="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
           
         </display>
     </data>
@@ -204,7 +204,7 @@
 
     
   <url>
-    <loc>https://softlns.coding.me/2015/11/28/python-gevent/</loc>
+    <loc>https://softlns.github.io/2015/11/28/python-gevent/</loc>
     <lastmod>2016-12-05T09:46:53.259Z</lastmod>
     <data>
         <display>
@@ -220,7 +220,7 @@
          
            
              
-              <breadCrumb title="技术" url="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
           
         </display>
     </data>
@@ -228,7 +228,7 @@
 
     
   <url>
-    <loc>https://softlns.coding.me/2014/10/26/unmount-not-found/</loc>
+    <loc>https://softlns.github.io/2014/10/26/unmount-not-found/</loc>
     <lastmod>2016-12-05T09:41:49.389Z</lastmod>
     <data>
         <display>
@@ -244,7 +244,7 @@
          
            
              
-              <breadCrumb title="技术" url="https://softlns.coding.me/categories/%E6%8A%80%E6%9C%AF/"/>
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
           
         </display>
     </data>
