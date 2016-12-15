@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://softlns.coding.me/2014/12/15/elasticsearch-config-optimize/</loc>
+    
+    <lastmod>2016-12-15T08:25:24.142Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://softlns.coding.me/2016/11/14/jenkins-gitlab-docker/</loc>
     
     <lastmod>2016-12-14T05:22:17.932Z</lastmod>

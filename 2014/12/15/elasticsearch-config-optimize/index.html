@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="linux,ubuntu,shell," />
+  <meta name="keywords" content="elasticsearch," />
 
 
 
@@ -92,22 +92,22 @@
 
 
 
-<meta name="description" content="不得不说，这是个很弱的问题，今儿碰巧遇到。答案也非常简单。虽然没什么营养，但是为了加深印象，也为了碰到这个问题的其他人搜索起来不要那么“举目无亲”，还是记录下来。
-
-根本没有什么unmount，而是umount。">
+<meta name="description" content="环境变量在es启动脚本里（elasticsearch.in.sh或elasticsearch.in.bat），内置了传递给JVM的启动参数JAVA_OPTS。其中最重要的参数是 -Xmx 和 -Xms，分别用来控制分配给es进程的最大内存、最小内存。（一般来说内存越多越好）
+通常来说，JAVA_OPTS使用默认值不要修改，而是通过ES_JAVA_OPTS环境变量来设置和修改JVM配置参数。
+ES_">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Ubuntu--&quot;unmount:command not found&quot;的解决方法">
-<meta property="og:url" content="https://softlns.coding.me/2014/10/26/unmount-not-found/index.html">
+<meta property="og:title" content="Elasticsearch配置及优化">
+<meta property="og:url" content="https://softlns.coding.me/2014/12/15/elasticsearch-config-optimize/index.html">
 <meta property="og:site_name" content="Lain's Blog">
-<meta property="og:description" content="不得不说，这是个很弱的问题，今儿碰巧遇到。答案也非常简单。虽然没什么营养，但是为了加深印象，也为了碰到这个问题的其他人搜索起来不要那么“举目无亲”，还是记录下来。
-
-根本没有什么unmount，而是umount。">
-<meta property="og:updated_time" content="2016-12-05T09:41:49.389Z">
+<meta property="og:description" content="环境变量在es启动脚本里（elasticsearch.in.sh或elasticsearch.in.bat），内置了传递给JVM的启动参数JAVA_OPTS。其中最重要的参数是 -Xmx 和 -Xms，分别用来控制分配给es进程的最大内存、最小内存。（一般来说内存越多越好）
+通常来说，JAVA_OPTS使用默认值不要修改，而是通过ES_JAVA_OPTS环境变量来设置和修改JVM配置参数。
+ES_">
+<meta property="og:updated_time" content="2016-12-15T08:25:24.142Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ubuntu--&quot;unmount:command not found&quot;的解决方法">
-<meta name="twitter:description" content="不得不说，这是个很弱的问题，今儿碰巧遇到。答案也非常简单。虽然没什么营养，但是为了加深印象，也为了碰到这个问题的其他人搜索起来不要那么“举目无亲”，还是记录下来。
-
-根本没有什么unmount，而是umount。">
+<meta name="twitter:title" content="Elasticsearch配置及优化">
+<meta name="twitter:description" content="环境变量在es启动脚本里（elasticsearch.in.sh或elasticsearch.in.bat），内置了传递给JVM的启动参数JAVA_OPTS。其中最重要的参数是 -Xmx 和 -Xms，分别用来控制分配给es进程的最大内存、最小内存。（一般来说内存越多越好）
+通常来说，JAVA_OPTS使用默认值不要修改，而是通过ES_JAVA_OPTS环境变量来设置和修改JVM配置参数。
+ES_">
 
 
 
@@ -135,13 +135,13 @@
 
 
 
-  <link rel="canonical" href="https://softlns.coding.me/2014/10/26/unmount-not-found/"/>
+  <link rel="canonical" href="https://softlns.coding.me/2014/12/15/elasticsearch-config-optimize/"/>
 
 
 
 
 
-  <title> Ubuntu--&quot;unmount:command not found&quot;的解决方法 | Lain's Blog </title>
+  <title> Elasticsearch配置及优化 | Lain's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -285,7 +285,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://softlns.coding.me/2014/10/26/unmount-not-found/">
+  <link itemprop="mainEntityOfPage" href="https://softlns.coding.me/2014/12/15/elasticsearch-config-optimize/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Lain">
@@ -309,7 +309,7 @@
             
             
               
-                Ubuntu--&quot;unmount:command not found&quot;的解决方法
+                Elasticsearch配置及优化
               
             
           </h1>
@@ -322,8 +322,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2014-10-26T17:22:02+08:00">
-                2014-10-26
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2014-12-15T16:20:03+08:00">
+                2014-12-15
               </time>
             
 
@@ -356,8 +356,8 @@
             
               <span class="post-comments-count">
                 <span class="post-meta-divider">|</span>
-                <a href="/2014/10/26/unmount-not-found/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/10/26/unmount-not-found/" itemprop="commentCount"></span>
+                <a href="/2014/12/15/elasticsearch-config-optimize/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/15/elasticsearch-config-optimize/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -367,7 +367,7 @@
 
           
           
-             <span id="/2014/10/26/unmount-not-found/" class="leancloud_visitors" data-flag-title="Ubuntu--&quot;unmount:command not found&quot;的解决方法">
+             <span id="/2014/12/15/elasticsearch-config-optimize/" class="leancloud_visitors" data-flag-title="Elasticsearch配置及优化">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -392,14 +392,43 @@
       
 
       
-        <p>不得不说，这是个很弱的问题，今儿碰巧遇到。答案也非常简单。虽然没什么营养，但是为了加深印象，也为了碰到这个问题的其他人搜索起来不要那么“举目无亲”，还是记录下来。</p>
-<blockquote>
-<p>根本没有什么unmount，而是umount。</p>
-</blockquote>
-<a id="more"></a>
-<p>错误命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo unmount /dev/sda3</div></pre></td></tr></table></figure></p>
-<p>正确命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo umount /dev/sda3</div></pre></td></tr></table></figure></p>
-<p>注：如果一定要使用unmount，可以设置别名<code>alias unmount=&#39;umount&#39;</code> </p>
+        <h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>在es启动脚本里（elasticsearch.in.sh或elasticsearch.in.bat），内置了传递给JVM的启动参数JAVA_OPTS。其中最重要的参数是 -Xmx 和 -Xms，分别用来控制分配给es进程的最大内存、最小内存。（一般来说内存越多越好）</p>
+<p>通常来说，JAVA_OPTS使用默认值不要修改，而是通过ES_JAVA_OPTS环境变量来设置和修改JVM配置参数。</p>
+<p>ES_HEAP_SIZE环境变量用来设置分配给es的java进程的堆内存，设置了ES_HEAP_SIZE变量它也会同事设置最小、最大内存。也可以单独分别设置ES_MIN_MEM、ES_MAX_MEM参数来决定分配的最小、最大内存。</p>
+<p>推荐最小、最大内存设置成相同值，并且打开mlockall开关。<br><a id="more"></a></p>
+<h2 id="系统配置"><a href="#系统配置" class="headerlink" title="系统配置"></a>系统配置</h2><h3 id="文件描述符（File-Description）"><a href="#文件描述符（File-Description）" class="headerlink" title="文件描述符（File Description）"></a>文件描述符（File Description）</h3><p>确保把机器的（或当前运行es用户的）打开文件描述符数量设置成32k或者推荐的64k。<br>设置完成后，可以通过增加 -Des.max-open-files=true启动参数，打印出进程能打开的文件数，测试是否生效。<br>或者通过Nodes Info Api来获取max_file_descriptors参数：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl localhost:9200/_nodes/process?pretty</div></pre></td></tr></table></figure></p>
+<h3 id="虚拟内存（Virtual-memory）"><a href="#虚拟内存（Virtual-memory）" class="headerlink" title="虚拟内存（Virtual memory）"></a>虚拟内存（Virtual memory）</h3><p>es默认使用 hybrid mmapfs / niofs 目录来存储索引。默认操作系统对mmap技术的限制太低，可能引发内存不足的异常。在Linux中，可以通过root账户运行下面的明亮来放开限制：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sysctl -w vm.max_mapcount=262144</div></pre></td></tr></table></figure></p>
+<p>永久生效需要更新系统文件 /etc/sysctl.conf 的 vm.max_map_count 字段。<br>如果是通过deb或是rpm包安装的话，会自动更新这个设置，可以通过下面的命令查看：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sysctl vm.max_map_count</div></pre></td></tr></table></figure></p>
+<h3 id="内存设置"><a href="#内存设置" class="headerlink" title="内存设置"></a>内存设置</h3><p>大部分的操作系统会对文件系统使用尽可能多的内存，并且容易换出一些未使用的应用内存，导致es进程内存被换出。这种操作对性能和节点的稳定性影响很大，应尽量避免。避免方法如下：</p>
+<h4 id="关闭swap"><a href="#关闭swap" class="headerlink" title="关闭swap"></a>关闭swap</h4><p>这是最简单的方法。因为通常来说，es是机器上面唯一的服务，它的内存使用由ES_HEAP_SIZE环境变量来控制，没有必要打开swap。</p>
+<p>在linux系统，可以通过运行 sudo swapoff -a 命令来临时关闭swap。如果想永久关闭，需要修改 /etc/fstab 文件，注释掉swap的相关配置。</p>
+<p>在windows系统，可以通过系统属性-&gt;高级-&gt;性能-&gt;高级-&gt;虚拟内存 来关闭分页文件</p>
+<h4 id="配置swappiness"><a href="#配置swappiness" class="headerlink" title="配置swappiness"></a>配置swappiness</h4><p>通过设置使得sysctl 的 vm.swappiness 为0。这会减少内核交换操作，在通过情况下不会触发swapping，除非在紧急情况下。</p>
+<p>注意：从内核版本3.5-rc1开始，swappiness为0将导致OOM killer杀死进程而不是允许交换。你必须把swappiness设为1，使得在紧急情况下可以swapping。</p>
+<h4 id="mlockcall"><a href="#mlockcall" class="headerlink" title="mlockcall"></a>mlockcall</h4><p>通过使用Linux的 mlockcall 或者 Windows的VirtualLock来把进程地址空间锁在内存里面，防止es的内存被换出。通过配置文件 config/elasticsearch.yml 中增加如下配置：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bootstrp.mlockall: <span class="literal">true</span></div></pre></td></tr></table></figure></p>
+<p>启动es后，你可以观察这个设置是否生效，通过以下放大检查mlockall：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http://localhost:9200/_nodes/process?pretty</div></pre></td></tr></table></figure></p>
+<p>如果mlockall为false，则mlockcall失败。最可能的原因是，在Linux/Unix系统中，运行es的用户没有权限来锁住内存，需要在启动es前铜鼓root账户运行 ulimit -l unlimited。</p>
+<p>另一个可能的原因是，临时目录（通常是/tmp）被以 noexec 情况下挂载，需要通过以下方法重新指定一个临时目录：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./bin/elasticsearch -Djna.tmpdir=/path/to/new/dir</div></pre></td></tr></table></figure></p>
+<p>警告： mloackall可能导致JVM或者shell退出，如果尝试分配多余可用内存的空间。</p>
+<h2 id="elasticsearch-配置"><a href="#elasticsearch-配置" class="headerlink" title="elasticsearch 配置"></a>elasticsearch 配置</h2><p>es配置文件在ES_HOME/config目录下面。elasticsearch.yml用于配置es的不同模块，logging.yml用于配置es的日志。<br>配置文件格式是YAML。下面是一个用于绑定和发布的网络模块的配置：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">network:</div><div class="line">  host: 10.0.0.4</div></pre></td></tr></table></figure></p>
+<h3 id="Paths（路径）"><a href="#Paths（路径）" class="headerlink" title="Paths（路径）"></a>Paths（路径）</h3><p>在使用过程中，一般会改变数据和日志的存放路径<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">path:</div><div class="line">  logs: /var/<span class="built_in">log</span>/elasticsearch</div><div class="line">  data: /var/data/elasticsearch</div></pre></td></tr></table></figure></p>
+<h3 id="Cluster-name（集群名）"><a href="#Cluster-name（集群名）" class="headerlink" title="Cluster name（集群名）"></a>Cluster name（集群名）</h3><p>记住要设置集群名，集群名用于发现和自动连接其他节点：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cluster:</div><div class="line">  name: 集群名</div></pre></td></tr></table></figure></p>
+<p>确保不要在不同的环境使用相同的集群名，否则将导致节点连接进错误的集群。例如：<br>你可以分别使用logging-dev，logging-stage，logging-prod作为开发、测试、正式发布集群。</p>
+<h3 id="Node-name（节点名）"><a href="#Node-name（节点名）" class="headerlink" title="Node name（节点名）"></a>Node name（节点名）</h3><p>你可能需要修改默认的节点名，比如修改成主机名。如果没有设置的话，es将从3000个名字中随机选一个作为节点名。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">node:</div><div class="line">  name: &lt;节点名&gt;</div></pre></td></tr></table></figure></p>
+<p>极其的主机名存于环境变量HOSTNAME中。如果集群中，你只运行单节点的es服务，可以把节点设置成主机名：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">node:</div><div class="line">  name: <span class="variable">$&#123;HOSTNAME&#125;</span></div></pre></td></tr></table></figure></p>
+<p>在内部，所有设置都变成基于命名空间的设置。例如，上述节点配置编程node.name。这意味着可以很容易支持一些其他配置格式，如JSON。如果要使用json配置，只要把elasticsearch.yml文件改成elasticsearch.json并添加：<br>配置格式：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="string">"network"</span>: &#123;</div><div class="line">	    <span class="string">"host"</span>: <span class="string">"10.0.0.4"</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>也可以很容易地通过外部采纳数ES_JAVA_OPT或者elasticsearch启动参数来设置，例如：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ elasticsearch -Des.network.host=10.0.0.4</div></pre></td></tr></table></figure></p>
+<p>另外一种选项是设置 es.default. 前缀来代替 es. 前缀，这样使得默认配置只有当前配置文件中没有明确设置时才生效。<br>另外一种选项是在配置文件中使用 $(…) 符号，这些符号与环境设置中变量相对应的，例如：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="string">"network"</span>: &#123;</div><div class="line">	    <span class="string">"host"</span>: <span class="string">"<span class="variable">$&#123;ES_NET_HOST&#125;</span>"</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>另外，如果你不想把一些参数保存在配置文件中，你可以使用${prompt.text} 或者 ${prompt.secret}，然后前台重启es。${prompt.text}会被显示出来，例如：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">node:</div><div class="line">  name: <span class="variable">$&#123;prompt.text&#125;</span></div></pre></td></tr></table></figure></p>
+<p>在启动es时，你需要输入对应的值：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Enter value <span class="keyword">for</span> [node.name]:</div></pre></td></tr></table></figure></p>
+<p>说明： 如果配置中使用了${prompt.text} 或者 ${prompt.secret}, es就不能以服务或者后台启动的方式运行。</p>
+<h2 id="索引配置"><a href="#索引配置" class="headerlink" title="索引配置"></a>索引配置</h2><p>集群中的索引可以有自己的配置。例如，一下语句创建一个基于内存的索引，而不是默认基于文件的（可以是YAML或者JSON格式）：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ curl -XPUT http://localhost:9200/kimchy/ <span class="_">-d</span> \</div><div class="line"><span class="string">' </span></div><div class="line">index : </div><div class="line">    refresh_interval: 5s</div><div class="line">'</div></pre></td></tr></table></figure></p>
+<p>索引级配置也可以在节点上设置，例如，在elasticsearch.yml文件中，可以配置如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">index:</div><div class="line">  refresh_interval: 5s</div></pre></td></tr></table></figure></p>
+<p>这表明这个节点上创建的索引都是存储在内存中的，除非重新设置。换句话说，索引级配置会覆盖节点级配置。当然上面也可以使用这种格式的配置：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ elasticsearch -Des.indexrefresh_interval=5s</div></pre></td></tr></table></figure></p>
+<p>所有索引级配置都可以在每个索引模块中找到。</p>
+<h2 id="日志配置"><a href="#日志配置" class="headerlink" title="日志配置"></a>日志配置</h2><p>es使用一种内部日志，有点儿像log4j。它通过使用YAML简化了log4j配置，配置文件中config/logging.yml.支持JSON和属性格式。可以加载多个配置文件，只要文件以logging. 前缀开头以.yml，.yaml， .json或者.properties结尾，它们将被合并。logger段中包含了java包和相应的日志级别，可以忽略org.elasticsearch前缀。appender段中包含日志的路径。更多资料在log4j.documentation.<br>    其它Appenders和其他的log4j-extras提供的日志类也可用。</p>
+<h4 id="废弃日志"><a href="#废弃日志" class="headerlink" title="废弃日志"></a>废弃日志</h4><p>除了正常日之外，es也允许打开已经弃用的行为日志，默认这个日志是关闭的。可以通过config/loggin.yml文件中的日志级别设置成DEBUG来打开：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">deprecation: DEBUG, deprecation_log_file</div></pre></td></tr></table></figure></p>
+<p>这将在日志记录下生成一个每天滚动的日志。定期检查这个文件，特鄙视准备升级到新版本的时候。</p>
 
       
     </div>
@@ -423,11 +452,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/linux/" rel="tag"># linux</a>
-          
-            <a href="/tags/ubuntu/" rel="tag"># ubuntu</a>
-          
-            <a href="/tags/shell/" rel="tag"># shell</a>
+            <a href="/tags/elasticsearch/" rel="tag"># elasticsearch</a>
           
         </div>
       
@@ -436,8 +461,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2014/09/13/go-goroutine/" rel="next" title="Go语言--并发篇">
-                <i class="fa fa-chevron-left"></i> Go语言--并发篇
+              <a href="/2014/12/14/search-engine-research/" rel="next" title="搜索引擎调研">
+                <i class="fa fa-chevron-left"></i> 搜索引擎调研
               </a>
             
           </div>
@@ -446,8 +471,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2014/12/14/search-engine-research/" rel="prev" title="搜索引擎调研">
-                搜索引擎调研 <i class="fa fa-chevron-right"></i>
+              <a href="/2015/11/28/python-gevent/" rel="prev" title="Gevent简明教程">
+                Gevent简明教程 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -463,10 +488,10 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2014/10/26/unmount-not-found/"
-     data-title="Ubuntu--&quot;unmount:command not found&quot;的解决方法"
+        <div class="ds-share flat" data-thread-key="2014/12/15/elasticsearch-config-optimize/"
+     data-title="Elasticsearch配置及优化"
      data-content=""
-     data-url="https://softlns.coding.me/2014/10/26/unmount-not-found/">
+     data-url="https://softlns.coding.me/2014/12/15/elasticsearch-config-optimize/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -493,8 +518,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2014/10/26/unmount-not-found/"
-           data-title="Ubuntu--&quot;unmount:command not found&quot;的解决方法" data-url="https://softlns.coding.me/2014/10/26/unmount-not-found/">
+      <div class="ds-thread" data-thread-key="2014/12/15/elasticsearch-config-optimize/"
+           data-title="Elasticsearch配置及优化" data-url="https://softlns.coding.me/2014/12/15/elasticsearch-config-optimize/">
       </div>
     
   </div>
@@ -518,8 +543,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -621,6 +655,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境变量"><span class="nav-number">1.</span> <span class="nav-text">环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统配置"><span class="nav-number">2.</span> <span class="nav-text">系统配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文件描述符（File-Description）"><span class="nav-number">2.1.</span> <span class="nav-text">文件描述符（File Description）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟内存（Virtual-memory）"><span class="nav-number">2.2.</span> <span class="nav-text">虚拟内存（Virtual memory）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存设置"><span class="nav-number">2.3.</span> <span class="nav-text">内存设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#关闭swap"><span class="nav-number">2.3.1.</span> <span class="nav-text">关闭swap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置swappiness"><span class="nav-number">2.3.2.</span> <span class="nav-text">配置swappiness</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mlockcall"><span class="nav-number">2.3.3.</span> <span class="nav-text">mlockcall</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#elasticsearch-配置"><span class="nav-number">3.</span> <span class="nav-text">elasticsearch 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Paths（路径）"><span class="nav-number">3.1.</span> <span class="nav-text">Paths（路径）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cluster-name（集群名）"><span class="nav-number">3.2.</span> <span class="nav-text">Cluster name（集群名）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Node-name（节点名）"><span class="nav-number">3.3.</span> <span class="nav-text">Node name（节点名）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引配置"><span class="nav-number">4.</span> <span class="nav-text">索引配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日志配置"><span class="nav-number">5.</span> <span class="nav-text">日志配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#废弃日志"><span class="nav-number">5.0.1.</span> <span class="nav-text">废弃日志</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
