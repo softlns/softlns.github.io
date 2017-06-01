@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://softlns.github.io/2014/09/13/go-goroutine/</loc>
+    
+    <lastmod>2017-06-01T09:45:44.534Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://softlns.github.io/2016/11/14/jenkins-gitlab-docker/</loc>
     
     <lastmod>2016-12-15T08:27:12.176Z</lastmod>
@@ -47,13 +54,6 @@
     <loc>https://softlns.github.io/2016/10/22/create-kubernetes-cluster/</loc>
     
     <lastmod>2016-12-06T08:30:19.597Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://softlns.github.io/2014/09/13/go-goroutine/</loc>
-    
-    <lastmod>2016-12-06T08:29:37.941Z</lastmod>
     
   </url>
   

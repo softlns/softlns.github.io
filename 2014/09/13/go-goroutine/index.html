@@ -119,7 +119,7 @@
 <meta property="og:image" content="https://divan.github.io/demos/gifs/primesieve.gif">
 <meta property="og:image" content="https://divan.github.io/demos/gifs/workers2.gif">
 <meta property="og:image" content="https://divan.github.io/demos/gifs/pingpong100.gif">
-<meta property="og:updated_time" content="2016-12-06T08:29:37.941Z">
+<meta property="og:updated_time" content="2017-06-01T09:45:44.534Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go语言--并发篇">
 <meta name="twitter:description" content="Go中并发程序依靠是：goroutine和channel
@@ -426,7 +426,7 @@ import (
 )
 
 func ready(w string, sec int64) {
-    time.Sleep(sec * 1e9)
+    time.Sleep(time.Duration(sec * 1e9))
     fmt.Println(w, &quot;is ready!&quot;)
 }
 
@@ -460,6 +460,7 @@ func main() {
     fmt.Println(&quot;I&apos;m waiting, but not too long&quot;)
     &lt;-c
     &lt;-c
+}
 </code></pre><h4 id="channel-进一步理解"><a href="#channel-进一步理解" class="headerlink" title="channel 进一步理解"></a>channel 进一步理解</h4><p>channel分为两种：有buffer的，没有buffer的  默认的是没有buffer的</p>
 <p>c1 := make(chan int)<br>c2 := make(chan int, 0)<br>c3 := make(chan int, 100)</p>
 <p>有缓冲的channel，注意先“放”后“取”<br>没有缓冲的channel，注意先“取”后“放”</p>
@@ -1099,8 +1100,8 @@ func main() {
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2016</span>
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

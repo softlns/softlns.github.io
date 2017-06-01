@@ -4,6 +4,30 @@
 
     
   <url>
+    <loc>https://softlns.github.io/2014/09/13/go-goroutine/</loc>
+    <lastmod>2017-06-01T09:45:44.534Z</lastmod>
+    <data>
+        <display>
+        <title>Go语言--并发篇</title>
+        <pubTime>2014-09-13T08:54:45.000Z</pubTime>
+        
+        <tag>golang</tag>
+         
+        <tag>goroutine</tag>
+         
+        <tag>channel</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://softlns.github.io/2016/11/14/jenkins-gitlab-docker/</loc>
     <lastmod>2016-12-15T08:27:12.176Z</lastmod>
     <data>
@@ -168,30 +192,6 @@
         <tag>Kubernetes</tag>
          
         <tag>Cluster</tag>
-         
-         
-           
-             
-              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://softlns.github.io/2014/09/13/go-goroutine/</loc>
-    <lastmod>2016-12-06T08:29:37.941Z</lastmod>
-    <data>
-        <display>
-        <title>Go语言--并发篇</title>
-        <pubTime>2014-09-13T08:54:45.000Z</pubTime>
-        
-        <tag>golang</tag>
-         
-        <tag>goroutine</tag>
-         
-        <tag>channel</tag>
          
          
            
