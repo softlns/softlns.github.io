@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://softlns.github.io/2016/12/06/s3fs-guide/</loc>
+    
+    <lastmod>2017-08-01T06:48:51.600Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://softlns.github.io/2014/09/13/go-goroutine/</loc>
     
     <lastmod>2017-06-01T09:45:44.534Z</lastmod>
@@ -33,13 +40,6 @@
     <loc>https://softlns.github.io/2016/11/28/rclone-guide/</loc>
     
     <lastmod>2016-12-06T12:05:04.679Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://softlns.github.io/2016/12/06/s3fs-guide/</loc>
-    
-    <lastmod>2016-12-06T11:44:06.989Z</lastmod>
     
   </url>
   
