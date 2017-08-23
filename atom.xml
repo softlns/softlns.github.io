@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://softlns.github.io/"/>
-  <updated>2017-08-21T09:02:20.481Z</updated>
+  <updated>2017-08-23T07:53:11.890Z</updated>
   <id>https://softlns.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://softlns.github.io/2016/12/06/s3fs-guide/"/>
     <id>https://softlns.github.io/2016/12/06/s3fs-guide/</id>
     <published>2016-12-06T03:20:12.000Z</published>
-    <updated>2017-08-21T09:02:20.481Z</updated>
+    <updated>2017-08-23T07:53:11.890Z</updated>
     
     <content type="html"><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>KS3（Kingsoft Standard Storage Service）服务是一个对象存储类服务。类似于网盘，可以通过网络随时随地的获取存储数据。金山云为用户管理KS3存储桶提供了两种控制管理方式：金山云的后台Consol、金山云官方KS3的SDK。</p>
 <p>相比于以上两种使用场景，在实际的开发应用中，常常还有这样的场景：把KS3存储桶mount到本地文件系统，使得用户可以像操作文件目录一样操作KS3的对象。</p>
@@ -33,7 +33,9 @@
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="配置KS3秘钥"><a href="#配置KS3秘钥" class="headerlink" title="配置KS3秘钥"></a>配置KS3秘钥</h3><p>配置KS3的KS3ACCESSKEYID、KS3SECRETACCESSKEY信息，并将其存储在/etc/passwd-s3fs 文件中<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> KS3ACCESSKEYID:KS3SECRETACCESSKEY &gt; /etc/passwd<span class="_">-s</span>3fs</div></pre></td></tr></table></figure></p>
 <p>修改秘钥文件权限，来限制访问：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod 600 /etc/passwd<span class="_">-s</span>3fs</div></pre></td></tr></table></figure></p>
 <h3 id="挂载KS3存储桶"><a href="#挂载KS3存储桶" class="headerlink" title="挂载KS3存储桶"></a>挂载KS3存储桶</h3><p>将KS3 bucket 挂载到指定目录<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">s3fs &lt;your-ks3-bucket-name&gt; &lt;your-mount-point&gt;  -o url=&lt;your-ks3-endpoint&gt;</div></pre></td></tr></table></figure></p>
-<h3 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h3><p>将KS3北京region的 ks3-fs-test 存储桶挂载到本地 /mnt/ks3 目录下， Ks3AccesskeyId 是 sgyO124X+/ZRbmgrbP7d，Ks3SecretAccessKey 是  p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH， ks3 endpoint是： <a href="http://ks3-cn-shanghai-internal.ksyun.com" target="_blank" rel="external">http://ks3-cn-shanghai-internal.ksyun.com</a> 。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> sgyO124X+/ZRbmgrbP7d:p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH &gt; /etc/passwd<span class="_">-s</span>3fs</div><div class="line">chmod 600 /etc/passwd<span class="_">-s</span>3fs</div><div class="line">mkdir /mnt/ks3</div><div class="line">s3fs ks3-fs-test  /mnt/ks3  -o passwd_file=/etc/passwd<span class="_">-s</span>3fs -o url=http://ks3-cn-shanghai-internal.ksyun.com</div></pre></td></tr></table></figure></p>
+<h3 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h3><p>将KS3北京region的 ks3-fs-test 存储桶挂载到本地 /mnt/ks3 目录下:<br>(Ks3AccesskeyId: sgyO124X+/ZRbmgrbP7d，<br> Ks3SecretAccessKey:p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH，<br> ks3 endpoint: <a href="http://ks3-cn-shanghai-internal.ksyun.com" target="_blank" rel="external">http://ks3-cn-shanghai-internal.ksyun.com</a>)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> sgyO124X+/ZRbmgrbP7d:p9/6yLzbU2FZEPw5vCPf2/buQOz1SVNdqqBtzscH &gt; /etc/passwd<span class="_">-s</span>3fs</div><div class="line">chmod 600 /etc/passwd<span class="_">-s</span>3fs</div><div class="line">mkdir /mnt/ks3</div><div class="line">s3fs ks3-fs-test  /mnt/ks3  -o passwd_file=/etc/passwd<span class="_">-s</span>3fs -o url=http://ks3-cn-shanghai-internal.ksyun.com</div></pre></td></tr></table></figure></p>
+<h3 id="多线程分块上传"><a href="#多线程分块上传" class="headerlink" title="多线程分块上传"></a>多线程分块上传</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">s3fs &lt;your-ks3-bucket-name&gt; &lt;your-mount-point&gt; -o multipart_size=100 -o parallel_count=10 -o sigv2 -o curldbg -o url=&lt;your-ks3-endpoint&gt;</div></pre></td></tr></table></figure>
+<p>注:<br>-o multipart_size 100: 分块大小100M<br>-o parallel_count 10 : 10线程并发</p>
 <h3 id="卸载bucket"><a href="#卸载bucket" class="headerlink" title="卸载bucket:"></a>卸载bucket:</h3><p>fusermount -u /mnt/s3fs</p>
 <h3 id="功能支持"><a href="#功能支持" class="headerlink" title="功能支持"></a>功能支持</h3><table>
 <thead>
