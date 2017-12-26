@@ -4,6 +4,54 @@
 
     
   <url>
+    <loc>https://softlns.github.io/2016/11/28/rclone-guide/</loc>
+    <lastmod>2017-12-26T07:26:19.545Z</lastmod>
+    <data>
+        <display>
+        <title>Rclone使用指南</title>
+        <pubTime>2016-11-28T03:14:40.000Z</pubTime>
+        
+        <tag>KS3</tag>
+         
+        <tag>Rclone</tag>
+         
+        <tag>S3</tag>
+         
+        <tag>共享存储</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://softlns.github.io/2015/12/26/vmware-toolbox-shrink/</loc>
+    <lastmod>2017-12-26T07:26:17.892Z</lastmod>
+    <data>
+        <display>
+        <title>VMware收缩Linux虚拟机体积</title>
+        <pubTime>2015-12-26T07:11:08.000Z</pubTime>
+        
+        <tag>VMware</tag>
+         
+        <tag>Linux</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://softlns.github.io/2016/12/06/s3fs-guide/</loc>
     <lastmod>2017-08-23T07:53:11.890Z</lastmod>
     <data>
@@ -118,32 +166,6 @@
         <tag>搜索引擎</tag>
          
         <tag>分布式</tag>
-         
-         
-           
-             
-              <breadCrumb title="技术" url="https://softlns.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://softlns.github.io/2016/11/28/rclone-guide/</loc>
-    <lastmod>2016-12-06T12:05:04.679Z</lastmod>
-    <data>
-        <display>
-        <title>Rclone使用指南</title>
-        <pubTime>2016-11-28T03:14:40.000Z</pubTime>
-        
-        <tag>KS3</tag>
-         
-        <tag>Rclone</tag>
-         
-        <tag>S3</tag>
-         
-        <tag>共享存储</tag>
          
          
            
